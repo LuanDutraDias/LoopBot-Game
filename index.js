@@ -1,3 +1,10 @@
+// POSIÇÃO DO JOGADOR E A DIREÇÃO PARA ONDE ELE ESTÁ OLHANDO
+const player = {
+    row: 0,
+    column: 0,
+    direction: 0,
+};
+
 // FAZER CADA QUADRADO OCUPAR UMA LINHA E UMA COLUNA DEFINIDAS PARA ALTERAR A POSIÇÃO DO JOGADOR
 const squares = document.querySelectorAll('.square');
 
@@ -10,6 +17,14 @@ for (let i = 0; i < 5; i++) {
     squarePosition++;
   }
 }
+
+matrix[player.row][player.column].innerHTML = '<i class="bi bi-android2"></i>';
+function movePlayer(){
+    matrix[player.row][player.column].innerHTML = '';
+    player.column++;
+    matrix[player.row][player.column].innerHTML = '<i class="bi bi-android2"></i>';
+}
+movePlayer();
 
 //
 
