@@ -1,4 +1,7 @@
 const grid = document.querySelector('#grid');
+// CRIAR ROBÔ;
+const robot = document.createElement('i');
+robot.classList.add('bi', 'bi-android2');
 
 const squaresArray = [];
 let gameRunning = true;
@@ -80,13 +83,13 @@ function addMapElement(square, char, i, j){
 const player = {
     row: 0,
     column: 0,
-    direction: 'right', //up | right | down | left
+    direction: 'down', //up | right | down | left
 };
 
 // RENDERIZA O JOGADOR NA TELA de acordo com O ID dos squares
 function renderPlayer() { 
     const square = document.getElementById(`square-${player.row}-${player.column}`); 
-    square.innerHTML = '<i class="bi bi-android2"></i>'; 
+    square.appendChild(robot);
 } 
 // MOVE O JOGADOR NA TELA
 function movePlayer() { 
@@ -102,27 +105,67 @@ function movePlayer() {
     renderPlayer();
 }
 
+let currentAngle = 0;
+robot.style.transition = 'transform 1s ease';
 function turnLeft() {
-    if (player.direction === 'up') player.direction = 'left';
-    else if (player.direction === 'left') player.direction = 'down';
-    else if (player.direction === 'down') player.direction = 'right';
-    else if (player.direction === 'right') player.direction = 'up';
+    if (player.direction === 'up'){
+        player.direction = 'left';
+        currentAngle -= 90;
+        robot.style.transform = `rotate(${currentAngle}deg)`;
+    }    
+    else if (player.direction === 'left'){
+        player.direction = 'down';
+        currentAngle -= 90;
+        robot.style.transform = `rotate(${currentAngle}deg)`;
+    }
+    else if (player.direction === 'down'){
+        player.direction = 'right';
+        currentAngle -= 90;
+        robot.style.transform = `rotate(${currentAngle}deg)`;
+    }
+    else if (player.direction === 'right'){
+        player.direction = 'up';
+        currentAngle -= 90;
+        robot.style.transform = `rotate(${currentAngle}deg)`;
+    } 
 }
 
 function turnRight() {
-    if (player.direction === 'up') player.direction = 'right';
-    else if (player.direction === 'right') player.direction = 'down';
-    else if (player.direction === 'down') player.direction = 'left';
-    else if (player.direction === 'left') player.direction = 'up';
+    if (player.direction === 'up'){
+        player.direction = 'right';
+        currentAngle += 90;
+        robot.style.transform = `rotate(${currentAngle}deg)`;
+    } 
+    else if (player.direction === 'right'){
+        player.direction = 'down';
+        currentAngle += 90;
+        robot.style.transform = `rotate(${currentAngle}deg)`;
+    } 
+    else if (player.direction === 'down'){
+        player.direction = 'left';
+        currentAngle += 90;
+        robot.style.transform = `rotate(${currentAngle}deg)`;
+    } 
+    else if (player.direction === 'left'){
+        player.direction = 'up';
+        currentAngle += 90;
+        robot.style.transform = `rotate(${currentAngle}deg)`;
+    } 
 }
 
 function executeCommands() { 
     delay = 0; // tempo entre comandos em ms
     for (let cmd of commandsToExecute) { 
         setTimeout(() => {
-        if (cmd === 'forward') movePlayer(); 
-        if (cmd === 'left') turnLeft(); 
-        if (cmd === 'right') turnRight(); 
+        if (cmd === 'forward'){
+            movePlayer();
+        }     
+        if (cmd === 'left'){
+            turnLeft(); 
+        } 
+        if (cmd === 'right'){
+            turnRight(); 
+        } 
         if (cmd === 'light') { 
             // exemplo: acender luz 
             console.log("Acendeu a luz!");
@@ -131,8 +174,12 @@ function executeCommands() {
         } 
     }, delay); 
     
-    delay += 500; // meio segundo entre cada comando 
-
+    if (cmd === 'forward'){
+        delay += 600; // milisegundo entre cada comando 
+    }
+    else {
+        delay += 1200;
+    }
     }
 }
 
@@ -159,6 +206,10 @@ function transformCommands(command){
             return '<i class="bi bi-arrow-90deg-left"></i>';       
         case 'light':
             return '<i class="bi bi-lightbulb-fill"></i>';
+        case 'p1':
+            return '<span>P1<span>';
+        case 'p2':
+            return '<span>P2<span>';    
         default:
             return '';        
     }
