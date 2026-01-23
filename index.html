@@ -15,14 +15,15 @@
         <div id="grid"></div>    
     </main>
     <div class="controls">
-        <button id="resetBtn" onclick="addMainCommands('reset')"><i class="bi bi-eraser"></i></button>
-        <button id="undoBtn" onclick="addMainCommands('undo')"><i class="bi bi-backspace"></i></button>
-        <button id="moveForwardBtn" onclick="addMainCommands('forward')"><i class="bi bi-arrow-up"></i></button>
-        <button id="turnLeftBtn" onclick="addMainCommands('left')"><i class="bi bi-arrow-90deg-left"></i></button>
-        <button id="turnRightBtn" onclick="addMainCommands('right')"><i class="bi bi-arrow-90deg-right"></i></button>
-        <button id="lightOnBtn" onclick="addMainCommands('light')"><i class="bi bi-lightbulb-fill"></i></button>
-        <button id="proc1Btn" onclick="addMainCommands('p1')"><span>P1</span></button>
-        <button id="proc2Btn" onclick="addMainCommands('p2')"><span>P2</span></button>
+        <button id="resetBtn" onclick="getCommand('reset')"><i class="bi bi-eraser"></i></button>
+        <button id="undoBtn" onclick="getCommand('undo')"><i class="bi bi-backspace"></i></button>
+        <button id="moveForwardBtn" onclick="getCommand('forward')"><i class="bi bi-arrow-up"></i></button>
+        <button id="turnLeftBtn" onclick="getCommand('left')"><i class="bi bi-arrow-90deg-left"></i></button>
+        <button id="turnRightBtn" onclick="getCommand('right')"><i class="bi bi-arrow-90deg-right"></i></button>
+        <button id="lightOnBtn" onclick="getCommand('light')"><i class="bi bi-lightbulb-fill"></i></button>
+        <button id="MainBtn" onclick="getCommand('main')"><span>MAIN</span></button>
+        <button id="proc1Btn" onclick="getCommand('p1')"><span>P1</span></button>
+        <button id="proc2Btn" onclick="getCommand('p2')"><span>P2</span></button>
     </div>
     <aside>
         <div class="display">
