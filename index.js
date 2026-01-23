@@ -232,7 +232,7 @@ function getCommand(command){
     if (command == 'main'){
         p1Exists = false;
     }
-    if (command == 'p1' || p1Exists == true){
+    else if (command == 'p1' || p1Exists == true){
         addP1Commands(command);
         p1Exists = true;
     }
@@ -271,7 +271,8 @@ function addMainCommands(command){
 }
 
 function addP1Commands(command){
-    if (command == 'p2'){
+    if (command == 'p1' || command == 'p2'){
+        addMainCommands(command);
         return;
     }
     if (command == 'undo' && counterP1 == 0){
@@ -299,7 +300,8 @@ function addP1Commands(command){
 }
 
 function addP2Commands(command){
-    if (command == 'p1'){
+    if (command == 'p1' || command == 'p2'){
+        addMainCommands(command);
         return;
     }
     if (command == 'undo' && counterP2 == 0){
