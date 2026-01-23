@@ -90,8 +90,7 @@ const player = {
 function renderPlayer() { 
     const square = document.getElementById(`square-${player.row}-${player.column}`); 
     square.appendChild(robot);
-    robot.style.transform = "rotate(-90deg)";
-} 
+}
 
 // MOVE O JOGADOR NA TELA
 function movePlayer() { 
