@@ -171,8 +171,8 @@ function executeCommands() {
                 delay += (subCmd === 'forward') ? 600 : 1200; //se é 'forward', espera 600ms, senão espera 1200ms
             } 
         } 
-        // se for P2, expande os comandos de P2 else 
-        if (cmd === 'p2') { 
+        // se for P2, expande os comandos de P2 
+        else if (cmd === 'p2') { 
             for (let subCmd of commandsToExecuteP2) { 
                 setTimeout(() => runCommand(subCmd), delay); 
                 delay += (subCmd === 'forward') ? 600 : 1200; 
