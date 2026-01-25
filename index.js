@@ -74,15 +74,15 @@ function addMapElement(square, char, i, j){
 
         case 'a':
             square.classList.add('ground-low');
-            square.style.backgroundColor = 'lime';
+            square.style.background = 'linear-gradient(to top, green, mediumseagreen)';
             break;
         case 'b':
             square.classList.add('ground-medium');
-            square.style.backgroundColor = 'sienna';
+            square.style.background = 'linear-gradient(to top, mediumseagreen, mediumspringgreen)';
             break;
         case 'c':
             square.classList.add('ground-high');
-            square.style.backgroundColor = 'peru';
+            square.style.background = 'linear-gradient(to top, limegreen, lime)';
             break;  
         case 'd':
             square.classList.add('ground-light');
@@ -236,13 +236,13 @@ function runCommand(cmd) {
         console.log("Acendeu a luz!"); 
         const currentSquare = document.getElementById(`square-${player.row}-${player.column}`); 
         if (currentSquare.style.backgroundColor == 'yellow' && currentSquare.classList.contains('ground-low')){ 
-            currentSquare.style.backgroundColor = 'lime'; 
+            currentSquare.style.background = 'linear-gradient(to top, green, mediumseagreen)'; 
         }
         else if (currentSquare.style.backgroundColor == 'yellow' && currentSquare.classList.contains('ground-medium')){ 
-            currentSquare.style.backgroundColor = 'sienna'; 
+            currentSquare.style.background = 'linear-gradient(to top, mediumseagreen, mediumspringgreen)'; 
         }
         else if (currentSquare.style.backgroundColor == 'yellow' && currentSquare.classList.contains('ground-high')){ 
-            currentSquare.style.backgroundColor = 'peru'; 
+            currentSquare.style.background = 'linear-gradient(to top, limegreen, lime)'; 
         }
         else if (currentSquare.style.backgroundColor == 'yellow' && currentSquare.classList.contains('ground-light')){ 
             currentSquare.style.backgroundColor = 'gray'; 
