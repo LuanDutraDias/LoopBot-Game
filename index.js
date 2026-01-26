@@ -9,6 +9,7 @@ robot.classList.add('robot-style');
 // POSIÇÃO DO JOGADOR E A DIREÇÃO PARA ONDE ELE ESTÁ OLHANDO
 const player = {
     alive: true,
+    angle: 0,
     row: 0,
     column: 0,
     high: 0,
@@ -125,47 +126,46 @@ function movePlayer() {
     updateCurrentPlayerHigh();
 }
 
-let currentAngle = 0;
 function turnLeft() {
     robot.style.transition = 'transform 1s ease';
     if (player.direction === 'up'){
         player.direction = 'left';
-        currentAngle -= 90;
+        player.angle -= 90;
     }    
     else if (player.direction === 'left'){
         player.direction = 'down';
-        currentAngle -= 90;
+        player.angle -= 90;
     }
     else if (player.direction === 'down'){
         player.direction = 'right';
-        currentAngle -= 90;
+        player.angle -= 90;
     }
     else if (player.direction === 'right'){
         player.direction = 'up';
-        currentAngle -= 90;
+        player.angle -= 90;
     } 
-    robot.style.transform = `rotate(${currentAngle}deg)`;
+    robot.style.transform = `rotate(${player.angle}deg)`;
 }
 
 function turnRight() {
     robot.style.transition = 'transform 1s ease';
     if (player.direction === 'up'){
         player.direction = 'right';
-        currentAngle += 90;
+        player.angle += 90;
     } 
     else if (player.direction === 'right'){
         player.direction = 'down';
-        currentAngle += 90;
+        player.angle += 90;
     } 
     else if (player.direction === 'down'){
         player.direction = 'left';
-        currentAngle += 90;
+        player.angle += 90;
     } 
     else if (player.direction === 'left'){
         player.direction = 'up';
-        currentAngle += 90;
+        player.angle += 90;
     } 
-    robot.style.transform = `rotate(${currentAngle}deg)`;
+    robot.style.transform = `rotate(${player.angle}deg)`;
 }
 
 function executeCommands() {
@@ -550,7 +550,7 @@ function resetPlayerPosition(){
     player.row = 0;
     player.column = 0;
     player.direction = 'down';
-    currentAngle = 0;
+    player.angle = 0;
     robot.style.transform = 'scale(1) rotate(0deg)';
 }
 
@@ -571,6 +571,7 @@ function restartLevel(){
     gameRunning = false;
     timeouts.forEach(id => clearTimeout(id));
     timeouts = [];
+    enableAllButtons();
     createBoard();
     resetPlayerPosition();
     renderPlayer();
@@ -589,7 +590,11 @@ function skipLevel(){
     gameRunning = false;
     timeouts.forEach(id => clearTimeout(id));
     timeouts = [];
-    level++
+    if (level == 2){
+        level--;
+    }
+    level++;
+    enableAllButtons();
     createBoard();
     resetPlayerPosition();
     renderPlayer();
@@ -616,6 +621,7 @@ function allTilesHaveBeenLit(){
 }
 
 function levelResult(){
+    disableAllButtons();
     const resultOverlay = document.querySelector('#resultOverlay');
     resultOverlay.classList.add('hidden');
     const feedback = document.querySelector('#feedback');
@@ -638,4 +644,18 @@ function levelResult(){
         feedback.classList.remove('hidden');
         tryAgainButton.classList.remove('hidden');
     }
+}
+
+function disableAllButtons(){
+    const buttons = document.querySelectorAll('.controls > button, .playResetSkip > button');
+    buttons.forEach(button => {
+        button.setAttribute('disabled', '');
+    });
+}
+
+function enableAllButtons(){
+    const buttons = document.querySelectorAll('.controls > button, .playResetSkip > button');
+    buttons.forEach(button => {
+        button.removeAttribute('disabled');
+    });
 }
