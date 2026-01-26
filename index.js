@@ -25,7 +25,7 @@ const maps = [
     //level 1
     [
         'aaeee',
-        'ebeee',
+        'eaeee',
         'eaead',
         'eaeae',
         'eaaae',
@@ -105,12 +105,14 @@ function renderPlayer() {
     if (player.direction === 'down') angle = 90; 
     if (player.direction === 'left') angle = 180; 
     if (player.direction === 'right') angle = 0; 
+
     robot.style.transform = `rotate(${angle}deg)`;
 }
 renderPlayer(); 
 
 // MOVE O JOGADOR NA TELA
 function movePlayer() { 
+    if (!isTheNextSquareOnTheMap()) return;
     const oldSquare = document.getElementById(`square-${player.row}-${player.column}`); 
     oldSquare.innerHTML = ''; 
     
@@ -128,6 +130,7 @@ function movePlayer() {
     } 
     // desenha na nova posição 
     renderPlayer();
+    updateCurrentPlayerHigh();
 }
 
 let currentAngle = 0;
@@ -138,14 +141,8 @@ function turnLeft() {
     else if (player.direction === 'left') player.direction = 'down'; 
     else if (player.direction === 'down') player.direction = 'right'; 
     else if (player.direction === 'right') player.direction = 'up'; 
-    // aplica rotação na tela 
-    let angle = 0; 
-    if (player.direction === 'up') angle = -90; 
-    if (player.direction === 'down') angle = 90; 
-    if (player.direction === 'left') angle = 180; 
-    if (player.direction === 'right') angle = 0; 
-    
-    robot.style.transform = `rotate(${angle}deg)`;
+   
+    renderPlayer();
 }
 
 function turnRight() {
@@ -154,21 +151,16 @@ function turnRight() {
     else if (player.direction === 'right') player.direction = 'down'; 
     else if (player.direction === 'down') player.direction = 'left'; 
     else if (player.direction === 'left') player.direction = 'up'; 
-    
-    let angle = 0; 
-    if (player.direction === 'up') angle = -90; 
-    if (player.direction === 'down') angle = 90; 
-    if (player.direction === 'left') angle = 180; 
-    if (player.direction === 'right') angle = 0; 
-    
-    robot.style.transform = `rotate(${angle}deg)`; 
+
+    renderPlayer();
 }
 
 function executeCommands() {
-    if (gameRunning == true) return;
-    if (player.alive == false) return;
+    if (gameRunning || !player.alive) return;
+
     gameRunning = true; 
     let delay = 0; // tempo entre comandos em ms 
+
     for (let cmd of commandsToExecuteOnMain) { //pega cada comando do array conforme o loop em que esta e coloca em cmd
         // se for P1, expande os comandos de P1 
         if (cmd === 'p1') { 
@@ -193,24 +185,23 @@ function executeCommands() {
             delay += (cmd === 'forward' || cmd === 'jump') ? 600 : 1200;
         } 
     }
-    delay += 1200;
-    const endId = setTimeout(() => {
+    setTimeout(() => {
         gameRunning = false;
-        if (player.alive == true){
+        if (player.alive){
             levelResult();
         }    
-    }, delay);
-    timeouts.push(endId);   
+    }, delay + 1200);
 } 
 
 function runCommand(cmd) { 
     if (player.alive == false){
         return;
     }
-    if (((cmd === 'forward' && isTheNextSquareLowerOrEqualPlayerHigh() == true) || (cmd === 'jump' && isTheNextSquareLowerOrEqualPlayerHigh() == false)) && isTheNextSquareOnTheMap() == true) {
+   if ((cmd === 'forward' || cmd === 'jump') && isTheNextSquareOnTheMap()) { 
+    if (isTheNextSquareLowerOrEqualPlayerHigh()) {
         movePlayer();
         updateCurrentPlayerHigh()
-        if (isTheSquareSafe() == false) {
+        if (!isTheSquareSafe()) {
             player.alive = false;
             gameRunning = false;
             timeouts.forEach(id => clearTimeout(id));
@@ -223,6 +214,7 @@ function runCommand(cmd) {
             return;
         }
     }     
+}
     if (cmd === 'left') turnLeft(); 
     if (cmd === 'right') turnRight(); 
     if (cmd === 'light') { 
@@ -316,10 +308,33 @@ function nextSquareHigh(){
     } 
 }
 
+function getNextSquare() {
+    if (player.direction === 'up') {
+        return document.getElementById(`square-${player.row - 1}-${player.column}`);
+    }
+    if (player.direction === 'down') {
+        return document.getElementById(`square-${player.row + 1}-${player.column}`);
+    }
+    if (player.direction === 'left') {
+        return document.getElementById(`square-${player.row}-${player.column - 1}`);
+    }
+    if (player.direction === 'right') {
+        return document.getElementById(`square-${player.row}-${player.column + 1}`);
+    }
+    return null;
+}
+
+
 function isTheNextSquareLowerOrEqualPlayerHigh(){
     updateCurrentPlayerHigh();
+    
+    const nextSquare = getNextSquare();
+
     if (player.high >= nextSquareHigh()){
         return true;
+    }
+    else if (nextSquare && nextSquare.classList.contains('ground-light')) { 
+        return true; 
     }
     else {
         return false;
