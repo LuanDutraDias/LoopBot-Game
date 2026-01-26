@@ -431,9 +431,9 @@ function transformCommands(command){
         case 'light':
             return '<i class="bi bi-lightbulb-fill"></i>';
         case 'jump':
-            return '<i class="bi bi-capslock-fill">';    
+            return '<i class="bi bi-capslock-fill"></i>';    
         case 'p1':
-            return '<span>P1<span>';
+            return '<span>P1<span>'; 
         case 'p2':
             return '<span>P2<span>';
         case 'main':
