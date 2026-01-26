@@ -183,7 +183,7 @@ function executeCommands() {
             for (let subCmd of commandsToExecuteOnP1) { 
                 const id = setTimeout(() => runCommand(subCmd), delay);
                 timeouts.push(id); 
-                delay += (subCmd === 'forward') ? 600 : 1200; //se é 'forward', espera 600ms, senão espera 1200ms
+                delay += (subCmd === 'forward' || subCmd === 'jump') ? 600 : 1200; //se é 'forward', espera 600ms, senão espera 1200ms
             } 
         } 
         // se for P2, expande os comandos de P2 
@@ -191,14 +191,14 @@ function executeCommands() {
             for (let subCmd of commandsToExecuteOnP2) { 
                 const id = setTimeout(() => runCommand(subCmd), delay);
                 timeouts.push(id); 
-                delay += (subCmd === 'forward') ? 600 : 1200;
+                delay += (subCmd === 'forward' || subCmd === 'jump') ? 600 : 1200;
             } 
         } 
         // comandos normais 
         else{ 
             const id = setTimeout(() => runCommand(cmd), delay);
             timeouts.push(id); 
-            delay += (cmd === 'forward') ? 600 : 1200;
+            delay += (cmd === 'forward' || cmd === 'jump') ? 600 : 1200;
         } 
     }
     delay += 1200;
@@ -216,7 +216,7 @@ function runCommand(cmd) {
     if (player.alive == false){
         return;
     }
-    if (cmd === 'forward' && isTheNextSquareLowerOrEqualPlayerHigh() == true && isTheNextSquareOnTheMap() == true) {
+    if (((cmd === 'forward' && isTheNextSquareLowerOrEqualPlayerHigh() == true) || (cmd === 'jump' && isTheNextSquareLowerOrEqualPlayerHigh() == false)) && isTheNextSquareOnTheMap() == true) {
         movePlayer();
         if (isTheSquareSafe() == false) {
             player.alive = false;
@@ -266,7 +266,7 @@ function isTheSquareSafe(){
 
 function updateCurrentPlayerHigh(){
     const currentSquare = document.getElementById(`square-${player.row}-${player.column}`);
-    if (currentSquare.classList.contains('ground-empty') || currentSquare.classList.contains('.ground-low')){
+    if (currentSquare.classList.contains('ground-empty') || currentSquare.classList.contains('ground-low')){
         player.high = 0;
     }
     else if (currentSquare.classList.contains('ground-medium')){
@@ -395,6 +395,8 @@ function transformCommands(command){
             return '<i class="bi bi-arrow-90deg-left"></i>';       
         case 'light':
             return '<i class="bi bi-lightbulb-fill"></i>';
+        case 'jump':
+            return '<i class="bi bi-capslock-fill">';    
         case 'p1':
             return '<span>P1<span>';
         case 'p2':
