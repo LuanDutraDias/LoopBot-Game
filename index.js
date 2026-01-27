@@ -1,25 +1,24 @@
 const body = document.querySelector('body');
 const grid = document.querySelector('#grid');
 
-// CRIAR ROBÔ;
 const robot = document.createElement('i');
 robot.classList.add('bi', 'bi-android2');
 robot.classList.add('robot-style');
 
-// POSIÇÃO DO JOGADOR E A DIREÇÃO PARA ONDE ELE ESTÁ OLHANDO
 const player = {
     alive: true,
     angle: 0,
     row: 0,
     column: 0,
     high: 0,
-    direction: 'down', //up | right | down | left
+    direction: 'down',
 };
 
 const squaresArray = [];
 let timeouts = [];
 let gameRunning = false;
-let level = 0;
+let level = 1;
+let maxLevel = 3;
 
 //a= chao baixo| b= chao medio| c= chao alto| d= chao da luz | e= chao vazio
 const maps = [
@@ -34,7 +33,7 @@ const maps = [
     //level 2
     [
         'aaeee',
-        'ebcbe',
+        'ebabe',
         'eeeae',
         'eeeae',
         'eeede',
@@ -44,36 +43,31 @@ const maps = [
         'aaeee',    
         'ebbbe',
         'eeece',
-        'ebcbe',
-        'eaade',
+        'debbe',
+        'cbaee',
     ],
 ];
 
 function createBoard(){
-    const currentMap = maps[level]; //seleciona o mapa
-    grid.innerHTML = ""; // limpa antes de recriar
+    const currentMap = maps[level - 1];
+    grid.innerHTML = "";
 
     for (let i = 0; i < currentMap.length; i++){
         for (let j = 0; j < currentMap[i].length; j++){
             const square = document.createElement('div');
-            square.setAttribute('id', `square-${i}-${j}`); //square-i-j
+            square.setAttribute('id', `square-${i}-${j}`);
             square.classList.add('square');
-
-            const char = currentMap[i][j]; //seleciona o tipo de chao
+            const char = currentMap[i][j];
             addMapElement(square, char, i, j);
-
             grid.appendChild(square);
             squaresArray.push(square);
         }
     }
 }
 createBoard();
-console.log(squaresArray);
 
-function addMapElement(square, char, i, j){
-    switch(char){ // ADICIONEI PELO JAVASCRIPT AS CORES PARA FACILITAR ALTERAR E COMPARAR-
-
-
+function addMapElement(square, char){
+    switch(char){
         case 'a':
             square.classList.add('ground-low');
             square.style.background = 'linear-gradient(to top, green, mediumseagreen)';
@@ -96,32 +90,21 @@ function addMapElement(square, char, i, j){
     }
 }
 
-// RENDERIZA O JOGADOR NA TELA de acordo com O ID dos squares
 function renderPlayer() { 
     const square = document.getElementById(`square-${player.row}-${player.column}`); 
     square.appendChild(robot);
 }
 renderPlayer();
 
-// MOVE O JOGADOR NA TELA
 function movePlayer() { 
-    if (!isTheNextSquareOnTheMap()) return;
+    if (isTheNextSquareOnTheMap() == false) return;
     const oldSquare = document.getElementById(`square-${player.row}-${player.column}`); 
     oldSquare.innerHTML = ''; 
     
-    if (player.direction === 'up'){
-        player.row--;
-    }     
-    if (player.direction === 'down'){
-        player.row++; 
-    } 
-    if (player.direction === 'left'){
-        player.column--; 
-    } 
-    if (player.direction === 'right'){
-        player.column++; 
-    } 
-    // desenha na nova posição 
+    if (player.direction === 'up') player.row--;
+    if (player.direction === 'down') player.row++; 
+    if (player.direction === 'left') player.column--;  
+    if (player.direction === 'right') player.column++; 
     renderPlayer();
     updateCurrentPlayerHigh();
 }
@@ -169,21 +152,18 @@ function turnRight() {
 }
 
 function executeCommands() {
-    if (gameRunning || !player.alive) return;
-
+    if (gameRunning || player.alive == false) return;
     gameRunning = true; 
-    let delay = 0; // tempo entre comandos em ms 
+    let delay = 0;
 
-    for (let cmd of commandsToExecuteOnMain) { //pega cada comando do array conforme o loop em que esta e coloca em cmd
-        // se for P1, expande os comandos de P1 
+    for (let cmd of commandsToExecuteOnMain){
         if (cmd === 'p1') { 
             for (let subCmd of commandsToExecuteOnP1) { 
                 const id = setTimeout(() => runCommand(subCmd), delay);
                 timeouts.push(id); 
-                delay += (subCmd === 'forward' || subCmd === 'jump') ? 600 : 1200; //se é 'forward', espera 600ms, senão espera 1200ms
+                delay += (subCmd === 'forward' || subCmd === 'jump') ? 600 : 1200;
             } 
         } 
-        // se for P2, expande os comandos de P2 
         else if (cmd === 'p2') { 
             for (let subCmd of commandsToExecuteOnP2) { 
                 const id = setTimeout(() => runCommand(subCmd), delay);
@@ -191,7 +171,6 @@ function executeCommands() {
                 delay += (subCmd === 'forward' || subCmd === 'jump') ? 600 : 1200;
             } 
         } 
-        // comandos normais 
         else{ 
             const id = setTimeout(() => runCommand(cmd), delay);
             timeouts.push(id); 
@@ -222,21 +201,16 @@ function runCommand(cmd) {
     if (player.alive == false){
         return;
     }
-   // ANDAR 
    if (cmd === 'forward' && isTheNextSquareOnTheMap()) { 
     if (isTheNextSquareLowerOrEqualPlayerHigh()) { 
         movePlayer(); 
         updateCurrentPlayerHigh(); 
-        if (!isTheSquareSafe()) handleDeath(); 
+        if (isTheSquareSafe() == false) handleDeath(); 
         } 
     } 
-    // PULAR 
     if (cmd === 'jump' && isTheNextSquareOnTheMap()) { 
-        const nextSquare = getNextSquare();
         const nextHigh = nextSquareHigh();
-
-       if (player.high != nextHigh) { 
-        
+        if (player.high != nextHigh) { 
         movePlayer(); 
         } 
     updateCurrentPlayerHigh(); 
@@ -246,7 +220,6 @@ function runCommand(cmd) {
     if (cmd === 'left') turnLeft(); 
     if (cmd === 'right') turnRight(); 
     if (cmd === 'light') { 
-        console.log("Acendeu a luz!"); 
         const currentSquare = document.getElementById(`square-${player.row}-${player.column}`); 
         if (currentSquare.style.backgroundColor == 'yellow' && currentSquare.classList.contains('ground-low')){ 
             currentSquare.style.background = 'linear-gradient(to top, green, mediumseagreen)'; 
@@ -355,9 +328,7 @@ function getNextSquare() {
 
 function isTheNextSquareLowerOrEqualPlayerHigh(){
     updateCurrentPlayerHigh();
-    
     const nextSquare = getNextSquare();
-
     if (player.high >= nextSquareHigh()){
         return true;
     }
@@ -404,7 +375,6 @@ function isTheNextSquareOnTheMap(){
     } 
 }
 
-// quando clicar no botão de executar: 
 document.querySelector('#executeBtn').addEventListener('click', executeCommands);
 
 let commandsToExecuteOnMain = [];
@@ -475,7 +445,7 @@ function addMainCommands(command){
     } else if (command == 'reset'){
         commandsToAppearOnMain = [];
         commandsToExecuteOnMain = [];
-        displayMain.innerHTML = commandsToAppearOnMain.join(''); // .join('') adiciona o que estiver no parênteses entre os elementos do vetor, então ele ATUALIZA O VETOR!!!
+        displayMain.innerHTML = commandsToAppearOnMain.join('');
         counter = 0;
     } 
     else { 
@@ -484,8 +454,6 @@ function addMainCommands(command){
         displayMain.innerHTML = commandsToAppearOnMain.join('');
         counter++; 
     }
-    console.log(commandsToAppearOnMain); 
-    console.log(commandsToExecuteOnMain);
 }
 
 function addP1Commands(command){
@@ -504,7 +472,7 @@ function addP1Commands(command){
     } else if (command == 'reset'){
         commandsToAppearOnP1 = [];
         commandsToExecuteOnP1 = [];
-        displayP1.innerHTML = commandsToAppearOnP1.join(''); // .join('') adiciona o que estiver no parênteses entre os elementos do vetor, então ele ATUALIZA O VETOR!!!
+        displayP1.innerHTML = commandsToAppearOnP1.join('');
         counterP1 = 0;
     } 
     else { 
@@ -513,8 +481,6 @@ function addP1Commands(command){
         displayP1.innerHTML = commandsToAppearOnP1.join('');
         counterP1++; 
     }
-    console.log(commandsToAppearOnP1); 
-    console.log(commandsToExecuteOnP1);
 }
 
 function addP2Commands(command){
@@ -533,7 +499,7 @@ function addP2Commands(command){
     } else if (command == 'reset'){
         commandsToAppearOnP2 = [];
         commandsToExecuteOnP2 = [];
-        displayP2.innerHTML = commandsToAppearOnP2.join(''); // .join('') adiciona o que estiver no parênteses entre os elementos do vetor, então ele ATUALIZA O VETOR!!!
+        displayP2.innerHTML = commandsToAppearOnP2.join('');
         counterP2 = 0;
     } 
     else { 
@@ -542,8 +508,6 @@ function addP2Commands(command){
         displayP2.innerHTML = commandsToAppearOnP2.join('');
         counterP2++; 
     }
-    console.log(commandsToAppearOnP2); 
-    console.log(commandsToExecuteOnP2);
 }
 
 function resetPlayerPosition(){
@@ -587,12 +551,11 @@ function restartLevel(){
 }
 
 function skipLevel(){
-    console.log('skip');
     player.alive = true;
     gameRunning = false;
     timeouts.forEach(id => clearTimeout(id));
     timeouts = [];
-    if (level == 2){
+    if (level == maxLevel){
         level--;
     }
     level++;
