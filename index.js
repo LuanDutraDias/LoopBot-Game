@@ -19,6 +19,7 @@ let timeouts = [];
 let gameRunning = false;
 let level = 1;
 let maxLevel = 3;
+let completedLevels = 0;
 
 //a= chao baixo| b= chao medio| c= chao alto| d= chao da luz | e= chao vazio
 const maps = [
@@ -596,19 +597,27 @@ function levelResult(){
     const skipLevelButton = document.querySelector('#skipLevelBtn');
     skipLevelButton.classList.add('hidden');
     if(allTilesHaveBeenLit() == true && player.alive == true){
+        completedLevels++;
         feedback.style.color = 'yellow';
-        feedback.textContent = 'LEVEL CLEAR';
         resultOverlay.classList.remove('hidden');
         feedback.classList.remove('hidden');
-        skipLevelButton.classList.remove('hidden');
-    }
+        feedback.textContent = 'LEVEL CLEAR';
+        if (completedLevels == maxLevel){ 
+            feedback.textContent = 'GAME CLEAR';
+        }
+        if (level < maxLevel){
+            skipLevelButton.classList.remove('hidden');
+        }
+    }    
     else {
         feedback.style.color = 'red';
         feedback.textContent = 'GAME OVER';
         resultOverlay.classList.remove('hidden');
         feedback.classList.remove('hidden');
         tryAgainButton.classList.remove('hidden');
-        skipLevelButton.classList.remove('hidden');
+        if (level < maxLevel){
+            skipLevelButton.classList.remove('hidden');
+        }
     }
 }
 
