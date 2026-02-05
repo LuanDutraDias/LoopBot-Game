@@ -8,7 +8,7 @@ robot.classList.add('robot-style');
 const resultOverlay = document.querySelector('#resultOverlay');
 const feedback = document.querySelector('#feedback');
 const tryAgainButton = document.querySelector('#tryAgainBtn');
-const skipLevelButton = document.querySelector('#skipLevelBtn');
+const nextLevelButton = document.querySelector('#nextLevel');
 
 const player = {
     alive: true,
@@ -566,15 +566,26 @@ function restartLevel(){
     hideResultOverlay();
 }
 
-function skipLevel(){
+function nextLevel(){
+    player.alive = true;
+    gameRunning = false;
+    timeouts.forEach(id => clearTimeout(id));
+    level++;
+    timeouts = [];
+    enableAllButtons();
+    createBoard();
+    resetPlayerPosition();
+    renderPlayer();
+    resetCommands();
+    hideResultOverlay();
+}
+
+function selectLevel(){
     player.alive = true;
     gameRunning = false;
     timeouts.forEach(id => clearTimeout(id));
     timeouts = [];
-    if (level == maxLevel){
-        level--;
-    }
-    level++;
+    showSelectLevelsTotalArea();
     enableAllButtons();
     createBoard();
     resetPlayerPosition();
@@ -587,7 +598,7 @@ function hideResultOverlay(){
     resultOverlay.classList.add('hidden');
     feedback.classList.add('hidden');
     tryAgainButton.classList.add('hidden');
-    skipLevelButton.classList.add('hidden');
+    nextLevelButton.classList.add('hidden');
 }
 
 function allTilesHaveBeenLit(){
@@ -614,7 +625,7 @@ function levelResult(){
             feedback.textContent = 'GAME CLEAR';
         }
         if (level < maxLevel){
-            skipLevelButton.classList.remove('hidden');
+            nextLevelButton.classList.remove('hidden');
         }
     }    
     else {
@@ -623,9 +634,6 @@ function levelResult(){
         resultOverlay.classList.remove('hidden');
         feedback.classList.remove('hidden');
         tryAgainButton.classList.remove('hidden');
-        if (level < maxLevel){
-            skipLevelButton.classList.remove('hidden');
-        }
     }
 }
 
@@ -684,6 +692,10 @@ createSelectLevelsSection();
 
 function hideSelectLevelsTotalArea(){
     selectLevelsTotalArea.classList.add('hidden');
+}
+
+function showSelectLevelsTotalArea(){
+    selectLevelsTotalArea.classList.remove('hidden');
 }
 
 selectLevelButton[0].addEventListener('click', function(){

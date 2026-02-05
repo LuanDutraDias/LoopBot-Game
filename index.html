@@ -11,7 +11,7 @@
     <div id="resultOverlay" class="hidden">
         <p id="feedback" class="feedbackMessage hidden"></p>
         <button id="tryAgainBtn" class="hidden" onclick="restartLevel()">Try Again</button>
-        <button id="skipLevelBtn" class="hidden" onclick="skipLevel()">Next Level</button>
+        <button id="nextLevel" class="hidden" onclick="nextLevel()">Next Level</button>
     </div>
     <header>
         <h1>Welcome to the GAME: <span>LightBot</span></h1>
@@ -44,7 +44,7 @@
     <div class="play-reset-selectLevel">
         <button id="executeBtn" onclick=""><i class="bi bi-play"></i></button>
         <button id="restartBtn" onclick="restartLevel('restart')"><i class="bi bi-arrow-repeat"></i></button>
-        <button id="selectLevelBtn" onclick="skipLevel()">Levels</button>
+        <button id="selectLevelBtn" onclick="selectLevel()">Levels</button>
     </div>
     <footer>
         <p>&copy; Todos os direitos reservados</p>
