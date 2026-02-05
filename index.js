@@ -22,9 +22,9 @@ const player = {
 const squaresArray = [];
 let timeouts = [];
 let gameRunning = false;
-let completedLevels = [false, false, false];
+let completedLevels = [false, false, false, false, false, false];
 let level = 1; 
-const maxLevel = 3;
+const maxLevel = 6;
 
 //a= chao baixo| b= chao medio| c= chao alto| d= chao da luz | e= chao vazio
 const maps = [
@@ -69,6 +69,7 @@ function createBoard(){
             squaresArray.push(square);
         }
     }
+    renderPlayer();
 }
 createBoard();
 
@@ -100,7 +101,6 @@ function renderPlayer() {
     const square = document.getElementById(`square-${player.row}-${player.column}`); 
     square.appendChild(robot);
 }
-renderPlayer();
 
 function movePlayer() { 
     if (isTheNextSquareOnTheMap() == false) return;
@@ -652,3 +652,67 @@ function allLevelsAreCompleted(){
     });
     return gameClear;
 }
+
+const selectLevelsTotalArea = document.createElement('div');
+selectLevelsTotalArea.setAttribute('id', 'selectLevelsTotalArea');
+body.appendChild(selectLevelsTotalArea);
+const selectLevelsSection = document.createElement('div');
+selectLevelsSection.setAttribute('id', 'selectLevelsSection');
+selectLevelsTotalArea.appendChild(selectLevelsSection);
+const selectLevelsHeader = document.createElement('header');
+selectLevelsTotalArea.appendChild(selectLevelsHeader);
+const selectLevelsTitle = document.createElement('h1');
+selectLevelsHeader.appendChild(selectLevelsTitle);
+selectLevelsTitle.innerHTML = 'Welcome to the GAME: <span>LightBot</span>';
+const selectLevelsCommand = document.createElement('h2');
+selectLevelsHeader.appendChild(selectLevelsCommand);
+selectLevelsCommand.innerHTML = 'Select the <span>LEVEL</span>';
+
+const levels = [1, 2, 3, 4, 5, 6];
+const selectLevelButton = [];
+
+function createSelectLevelsSection(){
+    levels.forEach(level => {
+        selectLevelButton[level - 1] = document.createElement('button');
+        selectLevelButton[level - 1].setAttribute('id', `squareLevel${level}`);
+        selectLevelButton[level - 1].textContent = level;
+        selectLevelsSection.appendChild(selectLevelButton[level - 1]);
+        selectLevelButton[level - 1].classList.add('squareLevel');
+    });
+}
+createSelectLevelsSection();
+
+function hideSelectLevelsTotalArea(){
+    selectLevelsTotalArea.classList.add('hidden');
+}
+
+selectLevelButton[0].addEventListener('click', function(){
+    level = 1;
+    createBoard();
+    hideSelectLevelsTotalArea();
+});
+selectLevelButton[1].addEventListener('click', function(){
+    level = 2;
+    createBoard();
+    hideSelectLevelsTotalArea();
+});
+selectLevelButton[2].addEventListener('click', function(){
+    level = 3;
+    createBoard();
+    hideSelectLevelsTotalArea();
+});
+selectLevelButton[3].addEventListener('click', function(){
+    level = 4;
+    createBoard();
+    hideSelectLevelsTotalArea();
+});
+selectLevelButton[4].addEventListener('click', function(){
+    level = 5;
+    createBoard();
+    hideSelectLevelsTotalArea();
+});
+selectLevelButton[5].addEventListener('click', function(){
+    level = 6;
+    createBoard();
+    hideSelectLevelsTotalArea();
+});
