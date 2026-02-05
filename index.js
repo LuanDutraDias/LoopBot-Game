@@ -167,6 +167,7 @@ function turnRight() {
 }
 
 function executeCommands() {
+    disableAllButtons();
     if (gameRunning || player.alive == false){
         return;
     } 
@@ -399,8 +400,6 @@ function isTheNextSquareOnTheMap(){
     } 
 }
 
-document.querySelector('#executeBtn').addEventListener('click', executeCommands);
-
 let commandsToExecuteOnMain = [];
 let commandsToAppearOnMain = [];
 let commandsToExecuteOnP1 = [];
@@ -559,6 +558,7 @@ function restartLevel(){
     gameRunning = false;
     timeouts.forEach(id => clearTimeout(id));
     timeouts = [];
+    selectLevelAfterResultButton.classList.add('hidden');
     enableAllButtons();
     createBoard();
     resetPlayerPosition();
@@ -573,6 +573,7 @@ function nextLevel(){
     timeouts.forEach(id => clearTimeout(id));
     level++;
     timeouts = [];
+    selectLevelAfterResultButton.classList.add('hidden');
     enableAllButtons();
     createBoard();
     resetPlayerPosition();
@@ -615,7 +616,6 @@ function allTilesHaveBeenLit(){
 }
 
 function levelResult(){
-    disableAllButtons();
     hideResultOverlay();
     selectLevelAfterResultButton.classList.remove('hidden');
     if(allTilesHaveBeenLit() == true && player.alive == true){

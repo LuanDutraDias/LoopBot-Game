@@ -313,10 +313,10 @@ footer {
     display: grid;
     grid-row: 2/3;
     grid-template-columns: 2fr 1fr 1fr 1fr 2fr;
-    grid-template-rows: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 0.7fr 1fr 1fr 0.7fr;
     justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: 15px;
 }
 
 .squareLevel {
