@@ -173,7 +173,7 @@ aside {
     padding: 10px;
 }
 
-.playResetSkip {
+.play-reset-selectLevel {
     grid-row: 3 / 4;
     grid-column: 2 / 3;
     display: flex;
@@ -182,7 +182,7 @@ aside {
     width: 95%;
 }
 
-.playResetSkip button {
+.play-reset-selectLevel button {
     margin: 0 10px;
     padding: 20px;
     color: white;
@@ -195,13 +195,13 @@ aside {
     font-size: 34px;
 }
 
-.playResetSkip button:disabled:hover {
+.play-reset-selectLevel button:disabled:hover {
     cursor: default;
     transform: none;
     background-color: rgb(0, 94, 173);
 }
 
-.playResetSkip button:hover {
+.play-reset-selectLevel button:hover {
     background-color: rgba(0, 94, 173, 85%);
     transform: scale(1.015);
 }

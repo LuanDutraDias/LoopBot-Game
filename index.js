@@ -630,14 +630,14 @@ function levelResult(){
 }
 
 function disableAllButtons(){
-    const buttons = document.querySelectorAll('.controls > button, .playResetSkip > button');
+    const buttons = document.querySelectorAll('.controls > button, .play-reset-selectLevel > button');
     buttons.forEach(button => {
         button.setAttribute('disabled', '');
     });
 }
 
 function enableAllButtons(){
-    const buttons = document.querySelectorAll('.controls > button, .playResetSkip > button');
+    const buttons = document.querySelectorAll('.controls > button, .play-reset-selectLevel > button');
     buttons.forEach(button => {
         button.removeAttribute('disabled');
     });
