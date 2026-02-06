@@ -572,6 +572,7 @@ function resetPlayerPosition(){
 }
 
 function resetCommands(){
+    getCommand('main');
     commandsToAppearOnMain = [];
     commandsToExecuteOnMain = [];
     commandsToAppearOnP1 = [];
@@ -653,6 +654,7 @@ function levelResult(){
     selectLevelAfterResultButton.classList.remove('hidden');
     if(allTilesHaveBeenLit() == true && player.alive == true){
         completedLevels[level - 1] = true;
+        lockIcons[level - 1].classList.remove('bi-lock');
         selectLevelButton[level].classList.remove('notAvailable');
         selectLevelButton[level].removeAttribute('disabled');
         feedback.style.color = 'yellow';
@@ -717,19 +719,22 @@ selectLevelsCommand.innerHTML = 'Select the <span>LEVEL</span>';
 const levels = [1, 2, 3, 4, 5, 6];
 const selectLevelButton = [];
 
+
 function createSelectLevelsSection(){
     levels.forEach(level => {
         selectLevelButton[level - 1] = document.createElement('button');
         selectLevelButton[level - 1].setAttribute('id', `squareLevel${level}`);
-        selectLevelButton[level - 1].textContent = level;
+        selectLevelButton[level - 1].innerHTML = level;
         selectLevelsSection.appendChild(selectLevelButton[level - 1]);
         selectLevelButton[level - 1].classList.add('squareLevel');
         if (level != 1){
             selectLevelButton[level - 1].classList.add('notAvailable');
+            selectLevelButton[level - 1].innerHTML += '<i class="bi bi-lock"></i>';
         }
     });
 }
 createSelectLevelsSection();
+const lockIcons = document.querySelectorAll('.bi-lock');
 
 function hideSelectLevelsTotalArea(){
     selectLevelsTotalArea.classList.add('hidden');
