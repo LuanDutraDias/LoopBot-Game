@@ -50,19 +50,19 @@ const maps = [
     ],
     //level 3
     [
-        'aaeee',    
-        'ebbbe',
-        'eeece',
-        'debbe',
-        'cbaee',
-    ],
-    //level 4
-    [
         'aaaaa',    
         'eeeeb',
         'dddeb',
         'deeeb',
         'ccccb',
+    ],
+    //level 4
+    [
+        'aaeee',    
+        'ebbbe',
+        'eeece',
+        'debbe',
+        'cbaee',
     ],
     //level 5
     [
