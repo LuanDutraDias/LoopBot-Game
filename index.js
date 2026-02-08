@@ -140,8 +140,9 @@ function renderPlayer() {
 function movePlayer() { 
     if (isTheNextSquareOnTheMap() == false) return;
     const oldSquare = document.getElementById(`square-${player.row}-${player.column}`); 
-    oldSquare.innerHTML = ''; 
-    
+    if (oldSquare.contains(robot)) {
+        oldSquare.removeChild(robot);
+    }
     if (player.direction === 'up'){
         player.row--;
     }    
@@ -258,13 +259,12 @@ function runCommand(cmd) {
         movePlayer(); 
         updateCurrentPlayerHigh(); 
             if (isTheSquareSafe() == false){
-            handleDeath(); 
+                handleDeath(); 
             } 
-        } 
+        }
     } 
     else if (cmd === 'jump' && isTheNextSquareOnTheMap()){ 
-        const nextHigh = nextSquareHigh();
-        if (player.high != nextHigh){ 
+        if (player.high < nextSquareHigh()){ 
             movePlayer(); 
         } 
         updateCurrentPlayerHigh(); 
@@ -713,6 +713,10 @@ selectLevelsSection.setAttribute('id', 'selectLevelsSection');
 selectLevelsTotalArea.appendChild(selectLevelsSection);
 const selectLevelsHeader = document.createElement('header');
 selectLevelsTotalArea.appendChild(selectLevelsHeader);
+const instructionsButton = document.createElement('button');
+selectLevelsHeader.appendChild(instructionsButton);
+instructionsButton.innerHTML = 'Instructions'
+instructionsButton.addEventListener('click', showGameInstructionsTotalArea);
 const selectLevelsTitle = document.createElement('h1');
 selectLevelsHeader.appendChild(selectLevelsTitle);
 selectLevelsTitle.innerHTML = 'Welcome to the GAME: <span>LightBot</span>';
@@ -824,12 +828,12 @@ function changeLevel6Design(){
 const gameInstructionsTotalArea = document.createElement('div');
 gameInstructionsTotalArea.setAttribute('id', 'gameInstructionsTotalArea');
 body.appendChild(gameInstructionsTotalArea);
-const gameInstructionsFooter = document.createElement('footer');
-gameInstructionsTotalArea.appendChild(gameInstructionsFooter);
+const gameInstructionsHeader = document.createElement('header');
+gameInstructionsTotalArea.appendChild(gameInstructionsHeader);
 const returnFromGameInstructionsAreaButton = document.createElement('button');
-gameInstructionsFooter.appendChild(returnFromGameInstructionsAreaButton);
+gameInstructionsHeader.appendChild(returnFromGameInstructionsAreaButton);
 const gameInstructionsTitle = document.createElement('h1');
-gameInstructionsFooter.appendChild(gameInstructionsTitle);
+gameInstructionsHeader.appendChild(gameInstructionsTitle);
 const gameInstructionsSection = document.createElement('div');
 gameInstructionsSection.setAttribute('id', 'gameInstructionsSection'); 
 gameInstructionsTotalArea.appendChild(gameInstructionsSection);
@@ -843,6 +847,16 @@ gameInstructionsSection.appendChild(thirdGameInstruction);
 returnFromGameInstructionsAreaButton.innerHTML = '<i class="bi bi-arrow-90deg-left"></i>'
 returnFromGameInstructionsAreaButton.addEventListener('click', () => {
     selectLevel();
-    gameInstructionsTotalArea.classList.add('hidden');
+    hideGameInstructionsTotalArea();
 });
+
+function showGameInstructionsTotalArea(){
+    selectLevelsTotalArea.classList.add('hidden');
+    gameInstructionsTotalArea.classList.remove('hidden');
+}
+
+function hideGameInstructionsTotalArea(){
+    gameInstructionsTotalArea.classList.add('hidden');
+}
+
 gameInstructionsTitle.innerHTML = 'Game Instructions';
