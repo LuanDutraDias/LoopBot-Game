@@ -615,9 +615,19 @@ function levelResult(){
         feedback.style.color = 'yellow';
         resultOverlay.classList.remove('hidden');
         feedback.classList.remove('hidden');
-        feedback.textContent = 'LEVEL CLEAR';
+        if (translateTheGameButton.innerHTML == 'Português 🇧🇷'){
+            feedback.textContent = 'FASE CONCLUÍDA';
+        }
+        else {
+            feedback.textContent = 'LEVEL CLEAR';
+        }
         if (allLevelsAreCompleted() == true){ 
-            feedback.textContent = 'GAME CLEAR';
+            if (translateTheGameButton.innerHTML == 'Português 🇧🇷'){
+                feedback.textContent = 'Você ZEROU o Jogo!';
+            }
+            else {
+                feedback.textContent = 'GAME CLEAR';
+            }
         }
         if (level < maxLevel){
             nextLevelButton.classList.remove('hidden');
@@ -625,7 +635,12 @@ function levelResult(){
     }    
     else {
         feedback.style.color = 'red';
-        feedback.textContent = 'GAME OVER';
+        if (translateTheGameButton.innerHTML == 'Português 🇧🇷'){
+            feedback.textContent = 'Você Perdeu!';
+        }
+        else {
+            feedback.textContent = 'GAME OVER';
+        }
         resultOverlay.classList.remove('hidden');
         feedback.classList.remove('hidden');
         tryAgainButton.classList.remove('hidden');
@@ -674,6 +689,48 @@ selectLevelsTitle.innerHTML = 'Welcome to the GAME: <span>LightBot</span>';
 const selectLevelsCommand = document.createElement('h2');
 selectLevelsHeader.appendChild(selectLevelsCommand);
 selectLevelsCommand.innerHTML = 'Select the <span>LEVEL</span>';
+const translateTheGameButton = document.createElement('button');
+selectLevelsHeader.appendChild(translateTheGameButton);
+translateTheGameButton.innerHTML = 'Português 🇧🇷';
+translateTheGameButton.addEventListener('click', translateTheGame);
+
+function translateTheGame(){
+    const mainTitle = document.querySelector('.mainHeader h1');
+    const mainButton = document.querySelector('#mainBtn');
+    const mainDisplayTitle = document.querySelector('.display p:nth-of-type(1)');
+    const selectLevelsAreaButton = document.querySelector('#selectLevelBtn');
+    const allRightsReserved = document.querySelector('footer span:nth-of-type(1)');
+    if (translateTheGameButton.innerHTML == 'Português 🇧🇷'){
+        translateTheGameButton.innerHTML = 'English 🇺🇸';
+        mainTitle.innerHTML = '<span>Bem-vindo ao JOGO:</span><span><span>L</span>ightBot</span>';
+        mainButton.innerHTML = '<span>Principal</span>';
+        mainDisplayTitle.innerHTML = 'PR<span>I</span>NCIPAL';
+        selectLevelsAreaButton.innerHTML = 'Fases';
+        allRightsReserved.innerHTML = '&copy; Todos os direitos reservados';
+        tryAgainButton.innerHTML = 'Tentar Novamente';
+        nextLevelButton.innerHTML = 'Próxima fase';
+        selectLevelAfterResultButton.innerHTML = 'Fases';
+        selectLevelsTitle.innerHTML = 'Bem-vindo ao JOGO: <span>LightBot</span>';
+        selectLevelsCommand.innerHTML = 'Selecione a <span>FASE</span>';
+        instructionsButton.innerHTML = 'Instruções';
+        gameInstructionsTitle.innerHTML = 'Instruções do Jogo';
+    }
+    else {
+        translateTheGameButton.innerHTML = 'Português 🇧🇷'
+        mainTitle.innerHTML = '<span>Welcome to the GAME:</span><span><span>L</span>ightBot</span>';
+        mainButton.innerHTML = '<span>MAIN</span>';
+        mainDisplayTitle.innerHTML = 'MA<span>I</span>N';
+        selectLevelsAreaButton.innerHTML = 'Levels';
+        allRightsReserved.innerHTML = '&copy; All rights reserved';
+        tryAgainButton.innerHTML = 'Try Again';
+        nextLevelButton.innerHTML = 'Next Level';
+        selectLevelAfterResultButton.innerHTML = 'Levels';
+        selectLevelsTitle.innerHTML = 'Welcome to the GAME: <span>LightBot</span>';
+        selectLevelsCommand.innerHTML = 'Select the <span>LEVEL</span>';
+        instructionsButton.innerHTML = 'Instructions';
+        gameInstructionsTitle.innerHTML = 'Game Instructions';
+    }
+}
 
 const levels = [1, 2, 3, 4, 5, 6];
 const selectLevelButton = [];
@@ -694,7 +751,7 @@ function createSelectLevelsSection(){
 createSelectLevelsSection();
 
 const lockIcons = document.querySelectorAll('.bi-lock');
-const hyphenOnFooter = document.querySelector('footer span');
+const hyphenOnFooter = document.querySelector('footer span:nth-of-type(2)');
 
 function hideSelectLevelsTotalArea(){
     selectLevelsTotalArea.classList.add('hidden');
