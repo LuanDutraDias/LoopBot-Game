@@ -177,7 +177,7 @@ function turnLeft() {
         player.direction = 'up';
         player.angle -= 90;
     } 
-    robot.style.transform = `rotate(${player.angle}deg)`;
+    robot.style.transform = `scale(1) rotate(${player.angle}deg)`;
 }
 
 function turnRight() {
@@ -198,7 +198,7 @@ function turnRight() {
         player.direction = 'up';
         player.angle += 90;
     } 
-    robot.style.transform = `rotate(${player.angle}deg)`;
+    robot.style.transform = `scale(1) rotate(${player.angle}deg)`;
 }
 
 let delay;
