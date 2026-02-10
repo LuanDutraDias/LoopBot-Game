@@ -426,7 +426,13 @@ function getCommand(command){
         p1Exists = false;
         p2Exists = false;
     }
-    else if (command == 'p1' || p1Exists == true){
+    else if (command == 'p1'){
+        p2Exists = false;
+    }
+    else if (command == 'p2'){
+        p1Exists = false;
+    }
+    if (command == 'p1' || p1Exists == true){
         addP1Commands(command);
         p1Exists = true;
     }
@@ -440,7 +446,10 @@ function getCommand(command){
 }
 
 function addMainCommands(command){
-    if (command == 'undo' && counter == 0){
+    if (command == 'main'){
+        return;
+    }
+    else if (command == 'undo' && counter == 0){
         return;
     } 
     else if (command == 'undo'){ 
@@ -467,7 +476,7 @@ function addP1Commands(command){
         addMainCommands(command);
         return;
     }
-    if (command == 'undo' && counterP1 == 0){
+    else if (command == 'undo' && counterP1 == 0){
         return;
     } 
     else if (command == 'undo'){ 
