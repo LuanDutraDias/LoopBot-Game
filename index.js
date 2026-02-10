@@ -24,7 +24,8 @@ const player = {
 };
 
 const squaresArray = [];
-let timeouts = [];
+let soundEffectsTimeouts = [];
+let commandTimeouts = [];
 let gameRunning = false;
 let level = 1; 
 let completedLevels = [];
@@ -203,21 +204,26 @@ function executeCommands(){
     for (let cmd of commandsToExecuteOnMain){
         if (cmd === 'p1'){ 
             for (let subCmd of commandsToExecuteOnP1){ 
-                const commandTimeoutId = setTimeout(() => runCommand(subCmd), delay);
-                timeouts.push(commandTimeoutId); 
-                delay += (subCmd === 'forward' || subCmd === 'jump') ? 600 : 1200;
+                const soundEffectTimeoutId = setTimeout(() => runSoundEffect(cmd), delay);
+                const commandTimeoutId = setTimeout(() => runCommand(cmd), delay);
+                soundEffectsTimeouts.push(soundEffectTimeoutId);
+                commandTimeouts.push(commandTimeoutId); 
             } 
         } 
         else if (cmd === 'p2'){ 
             for (let subCmd of commandsToExecuteOnP2){ 
-                const commandTimeoutId = setTimeout(() => runCommand(subCmd), delay);
-                timeouts.push(commandTimeoutId); 
+                const soundEffectTimeoutId = setTimeout(() => runSoundEffect(cmd), delay);
+                const commandTimeoutId = setTimeout(() => runCommand(cmd), delay);
+                soundEffectsTimeouts.push(soundEffectTimeoutId);
+                commandTimeouts.push(commandTimeoutId);  
                 delay += (subCmd === 'forward' || subCmd === 'jump') ? 600 : 1200;
             } 
         } 
         else{ 
+            const soundEffectTimeoutId = setTimeout(() => runSoundEffect(cmd), delay);
             const commandTimeoutId = setTimeout(() => runCommand(cmd), delay);
-            timeouts.push(commandTimeoutId); 
+            soundEffectsTimeouts.push(soundEffectTimeoutId);
+            commandTimeouts.push(commandTimeoutId); 
             delay += (cmd === 'forward' || cmd === 'jump') ? 600 : 1200;
         } 
     }
@@ -235,16 +241,37 @@ function levelResultWithNoDeath(){
 function handleDeath(){
     player.alive = false;
     gameRunning = false;
-    timeouts.forEach(commandTimeoutId => clearTimeout(commandTimeoutId));
-    timeouts = [];
+    soundEffectsTimeouts.forEach(soundEffectsTimeouts => clearTimeout(soundEffectsTimeouts));
+    soundEffectsTimeouts = [];
+    commandTimeouts.forEach(commandTimeoutId => clearTimeout(commandTimeoutId));
+    commandTimeouts = [];
     clearTimeout(levelResultWithNoDeathIdTimeout);
     setTimeout(() => {
+        soundEffects.fallingIntoBlackHole.play();
         robot.style.transition = 'transform 1.5s ease';
         robot.style.transform = 'scale(0) rotate(540deg)';
     }, 650);
     setTimeout(() => {
         levelResult();
     }, 1950);
+}
+
+function runSoundEffect(cmd){
+    if (cmd == 'forward'){
+        soundEffects.forward.play();
+    }
+    else if (cmd == 'jump'){
+        soundEffects.jump.play();
+    }
+    else if (cmd == 'light'){
+        soundEffects.lightSwitch.play();
+    }
+    else if (cmd == 'right'){
+        soundEffects.turnRight.play();
+    }
+    else if (cmd == 'left'){
+        soundEffects.turnLeft.play();
+    }
 }
 
 function runCommand(cmd){ 
@@ -549,8 +576,8 @@ function resetCommands(){
 function restartLevel(){
     player.alive = true;
     gameRunning = false;
-    timeouts.forEach(id => clearTimeout(id));
-    timeouts = [];
+    soundEffectsTimeouts = [];
+    commandTimeouts = [];
     selectLevelAfterResultButton.classList.add('hidden');
     enableAllButtons();
     createBoard();
@@ -564,9 +591,9 @@ function restartLevel(){
 function nextLevel(){
     player.alive = true;
     gameRunning = false;
-    timeouts.forEach(id => clearTimeout(id));
     level++;
-    timeouts = [];
+    soundEffectsTimeouts = [];
+    commandTimeouts = [];
     selectLevelAfterResultButton.classList.add('hidden');
     enableAllButtons();
     createBoard();
@@ -580,8 +607,8 @@ function nextLevel(){
 function selectLevel(){
     player.alive = true;
     gameRunning = false;
-    timeouts.forEach(id => clearTimeout(id));
-    timeouts = [];
+    soundEffectsTimeouts = [];
+    commandTimeouts = [];
     selectLevelAfterResultButton.classList.add('hidden');
     showSelectLevelsTotalArea();
     enableAllButtons();
@@ -615,6 +642,7 @@ function levelResult(){
     hideResultOverlay();
     selectLevelAfterResultButton.classList.remove('hidden');
     if(allTilesHaveBeenLit() == true && player.alive == true){
+        soundEffects.levelClear.play();
         completedLevels[level - 1] = true;
         if (level != 6){
             lockIcons[level - 1].classList.remove('bi-lock');
@@ -624,14 +652,15 @@ function levelResult(){
         feedback.style.color = 'yellow';
         resultOverlay.classList.remove('hidden');
         feedback.classList.remove('hidden');
-        if (translateTheGameButton.innerHTML == 'Português 🇧🇷'){
+        if (translateTheGameButton.innerHTML == 'English 🇺🇸'){
             feedback.textContent = 'FASE CONCLUÍDA';
         }
         else {
             feedback.textContent = 'LEVEL CLEAR';
         }
         if (allLevelsAreCompleted() == true){ 
-            if (translateTheGameButton.innerHTML == 'Português 🇧🇷'){
+            soundEffects.gameClear.play();
+            if (translateTheGameButton.innerHTML == 'English 🇺🇸'){
                 feedback.textContent = 'Você ZEROU o Jogo!';
             }
             else {
@@ -643,8 +672,9 @@ function levelResult(){
         }
     }    
     else {
+        soundEffects.gameOver.play();
         feedback.style.color = 'red';
-        if (translateTheGameButton.innerHTML == 'Português 🇧🇷'){
+        if (translateTheGameButton.innerHTML == 'English 🇺🇸'){
             feedback.textContent = 'Você Perdeu!';
         }
         else {
@@ -907,3 +937,50 @@ groundHigh.appendChild(robot.cloneNode(true));
 thirdGameInstruction.appendChild(groundHigh.cloneNode(true));
 thirdGameInstruction.innerHTML += '<i class="bi bi-capslock-fill"></i>' + '<i class="bi bi-x-lg"></i>';
 thirdGameInstruction.appendChild(groundHigh.cloneNode(true));
+
+const soundEffects = {
+    gameClear: new Howl({
+        src: ['./audio/gameClear.mp3', './audio/gameClear.ogg'],
+        autoplay: true,
+        volume: 0.1, 
+    }),
+    levelClear: new Howl({
+        src: ['./audio/levelClear.mp3', './audio/levelClear.ogg'],
+        volume: 0.4
+    }),
+    gameOver: new Howl({
+        src: ['./audio/gameOver.mp3', './audio/gameOver.ogg'],
+        volume: 0.5,
+    }),
+    fallingIntoBlackHole:  new Howl({
+        src: ['./audio/fallingIntoBlackHole.mp3', './audio/fallingIntoBlackHole.ogg'],
+        volume: 0.2
+    }),
+    forward: new Howl({
+        src: ['./audio/forward.mp3', './audio/forward.ogg'],
+        volume: 1.5
+    }),
+    turnRight: new Howl({
+        src: ['./audio/turnRight.mp3', './audio/turnRight.ogg'],
+        volume: 0.45
+    }),
+    turnLeft: new Howl({
+        src: ['./audio/turnLeft.mp3', './audio/turnLeft.ogg'],
+        volume: 0.15
+    }),
+    jump: new Howl({
+        src: ['./audio/jump.mp3', './audio/jump.ogg'],
+        volume: 0.4
+    }),
+    lightSwitch: new Howl({
+        src: ['./audio/lightSwitch.mp3', './audio/jump.ogg'],
+        volume: 0.4
+    }),
+    gameMusic: new Howl({
+        src: ['./audio/gameMusic.mp3', './audio/gameMusic.ogg'],
+  
+        loop: true,
+        rate: 0.95,
+        volume: 0.4
+    })
+};
