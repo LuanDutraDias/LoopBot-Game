@@ -135,10 +135,6 @@ function renderPlayer(){
     robot.style.transform = `scale(1) rotate(${player.angle}deg) translate(0, 0)`;
 }
 
-function jumpAnimation(){
-
-}
-
 function movePlayer() { 
     if (isTheNextSquareOnTheMap() == false){
         return;
@@ -202,12 +198,18 @@ function turnRight() {
 
 function prepareForJumpAnimation(){
     robot.style.transition = 'transform 0.5s ease';
-    robot.style.transform = `scale(1) rotate(${player.angle}deg) translate(0, 5px)`;
+    robot.style.transform = `scale(1) rotate(${player.angle}deg) translate(0, 4px)`;
 }
 
 function jumpAnimation(){
-    robot.style.transition = 'transform 0.8s ease';
-    robot.style.transform = `scale(1) rotate(${player.angle}deg) translate(0, -8px)`;
+    soundEffects.jump.play();
+    robot.style.transition = 'transform 0.3s ease';
+    robot.style.transform = `scale(1) rotate(${player.angle}deg) translate(0, -7px)`;
+}
+
+function fallingAfterJumping(){
+    robot.style.transition = 'transform 0.3s ease';
+    robot.style.transform = `scale(1) rotate(${player.angle}deg) translate(0, 0)`;
 }
 
 let delay;
@@ -231,7 +233,15 @@ function executeCommands(){
                 const commandTimeoutId = setTimeout(() => runCommand(subCmd), delay); 
                 soundEffectsTimeouts.push(soundEffectTimeoutId);
                 commandTimeouts.push(commandTimeoutId);
-                delay += (subCmd === 'forward' || subCmd === 'jump' || subCmd === 'light') ? 1200 : 1800;
+                if (subCmd === 'jump'){
+                    delay += 1800;
+                }
+                else if (subCmd === 'forward' || subCmd === 'light'){
+                    delay +=  600;
+                }
+                else {
+                    delay += 1200;
+                }
             } 
         } 
         else if (cmd === 'p2'){ 
@@ -246,7 +256,15 @@ function executeCommands(){
                 const commandTimeoutId = setTimeout(() => runCommand(subCmd), delay);
                 soundEffectsTimeouts.push(soundEffectTimeoutId);
                 commandTimeouts.push(commandTimeoutId);  
-                delay += (subCmd === 'forward' || subCmd === 'jump' || subCmd === 'light') ? 1200 : 1800;
+                if (subCmd === 'jump'){
+                    delay += 1800;
+                }
+                    else if (subCmd === 'forward' || subCmd === 'light'){
+                    delay +=  600;
+                }
+                else {
+                    delay += 1200;
+                }
             } 
         } 
         else{ 
@@ -260,7 +278,15 @@ function executeCommands(){
             const commandTimeoutId = setTimeout(() => runCommand(cmd), delay);
             soundEffectsTimeouts.push(soundEffectTimeoutId);
             commandTimeouts.push(commandTimeoutId); 
-            delay += (cmd === 'forward' || cmd === 'jump' || cmd === 'light') ? 1200 : 1800;
+            if (cmd === 'jump'){
+                delay += 1600;
+            }
+            else if (cmd === 'forward' || cmd === 'light'){
+                delay +=  600;
+            }
+            else {
+                delay += 1200;
+            }
         } 
     }
     levelResultWithNoDeath();
@@ -295,9 +321,6 @@ function handleDeath(){
 function runSoundEffect(cmd){
     if (cmd == 'forward'){
         soundEffects.forward.play();
-    }
-    else if (cmd == 'jump'){
-        soundEffects.jump.play();
     }
     else if (cmd == 'light'){
         soundEffects.lightSwitch.play();
@@ -347,6 +370,9 @@ function runCommand(cmd){
             currentSquare.style.background = '';
             currentSquare.style.backgroundColor = 'yellow'; 
         } 
+    }
+    else {
+        fallingAfterJumping();
     }
 }
 
