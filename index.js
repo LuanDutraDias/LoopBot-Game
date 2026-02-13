@@ -24,6 +24,7 @@ const player = {
 };
 
 const squaresArray = [];
+let jumpAnimationTimeouts = [];
 let soundEffectsTimeouts = [];
 let commandTimeouts = [];
 let gameRunning = false;
@@ -130,6 +131,12 @@ function renderPlayer(){
     }
     const square = document.getElementById(`square-${player.row}-${player.column}`);
     square.appendChild(robot);
+    robot.style.transition = 'none';
+    robot.style.transform = `scale(1) rotate(${player.angle}deg) translate(0, 0)`;
+}
+
+function jumpAnimation(){
+
 }
 
 function movePlayer() { 
@@ -169,7 +176,7 @@ function turnLeft() {
         player.angle -= 90;
     } 
     robot.style.transition = 'transform 1s ease';
-    robot.style.transform = `scale(1) rotate(${player.angle}deg)`;
+    robot.style.transform = `scale(1) rotate(${player.angle}deg) translate(0, 0)`;
 }
 
 function turnRight() {
@@ -190,7 +197,17 @@ function turnRight() {
         player.angle += 90;
     } 
     robot.style.transition = 'transform 1s ease';
-    robot.style.transform = `scale(1) rotate(${player.angle}deg)`;
+    robot.style.transform = `scale(1) rotate(${player.angle}deg) translate(0, 0)`;
+}
+
+function prepareForJumpAnimation(){
+    robot.style.transition = 'transform 0.5s ease';
+    robot.style.transform = `scale(1) rotate(${player.angle}deg) translate(0, 5px)`;
+}
+
+function jumpAnimation(){
+    robot.style.transition = 'transform 0.8s ease';
+    robot.style.transform = `scale(1) rotate(${player.angle}deg) translate(0, -8px)`;
 }
 
 let delay;
@@ -200,31 +217,50 @@ function executeCommands(){
         return;
     }
     gameRunning = true; 
-    delay = 0;
+    delay = 1200;
     for (let cmd of commandsToExecuteOnMain){
         if (cmd === 'p1'){ 
             for (let subCmd of commandsToExecuteOnP1){ 
-                const soundEffectTimeoutId = setTimeout(() => runSoundEffect(cmd), delay);
-                const commandTimeoutId = setTimeout(() => runCommand(cmd), delay);
+                if (subCmd === 'jump'){
+                    const jumpAnimationTimeoutId = setTimeout(() => jumpAnimation(), delay - 600);
+                    jumpAnimationTimeouts.push(jumpAnimationTimeoutId);
+                    const prepareForJumpAnimationTimeoutId = setTimeout(() => prepareForJumpAnimation(), delay - 1200);
+                    jumpAnimationTimeouts.push(prepareForJumpAnimationTimeoutId);
+                }
+                const soundEffectTimeoutId = setTimeout(() => runSoundEffect(subCmd), delay);
+                const commandTimeoutId = setTimeout(() => runCommand(subCmd), delay); 
                 soundEffectsTimeouts.push(soundEffectTimeoutId);
-                commandTimeouts.push(commandTimeoutId); 
+                commandTimeouts.push(commandTimeoutId);
+                delay += (subCmd === 'forward' || subCmd === 'jump' || subCmd === 'light') ? 1200 : 1800;
             } 
         } 
         else if (cmd === 'p2'){ 
             for (let subCmd of commandsToExecuteOnP2){ 
-                const soundEffectTimeoutId = setTimeout(() => runSoundEffect(cmd), delay);
-                const commandTimeoutId = setTimeout(() => runCommand(cmd), delay);
+                if (SourceBuffermd === 'jump'){
+                    const jumpAnimationTimeoutId = setTimeout(() => jumpAnimation(), delay - 600);
+                    jumpAnimationTimeouts.push(jumpAnimationTimeoutId);
+                    const prepareForJumpAnimationTimeoutId = setTimeout(() => prepareForJumpAnimation(), delay - 1200);
+                    jumpAnimationTimeouts.push(prepareForJumpAnimationTimeoutId);
+                }    
+                const soundEffectTimeoutId = setTimeout(() => runSoundEffect(subCmd), delay);
+                const commandTimeoutId = setTimeout(() => runCommand(subCmd), delay);
                 soundEffectsTimeouts.push(soundEffectTimeoutId);
                 commandTimeouts.push(commandTimeoutId);  
-                delay += (subCmd === 'forward' || subCmd === 'jump') ? 600 : 1200;
+                delay += (subCmd === 'forward' || subCmd === 'jump' || subCmd === 'light') ? 1200 : 1800;
             } 
         } 
         else{ 
+            if (cmd === 'jump'){
+                const jumpAnimationTimeoutId = setTimeout(() => jumpAnimation(), delay - 600);
+                jumpAnimationTimeouts.push(jumpAnimationTimeoutId);
+                const prepareForJumpAnimationTimeoutId = setTimeout(() => prepareForJumpAnimation(), delay - 1200);
+                jumpAnimationTimeouts.push(prepareForJumpAnimationTimeoutId);
+            }    
             const soundEffectTimeoutId = setTimeout(() => runSoundEffect(cmd), delay);
             const commandTimeoutId = setTimeout(() => runCommand(cmd), delay);
             soundEffectsTimeouts.push(soundEffectTimeoutId);
             commandTimeouts.push(commandTimeoutId); 
-            delay += (cmd === 'forward' || cmd === 'jump') ? 600 : 1200;
+            delay += (cmd === 'forward' || cmd === 'jump' || cmd === 'light') ? 1200 : 1800;
         } 
     }
     levelResultWithNoDeath();
@@ -249,7 +285,7 @@ function handleDeath(){
     setTimeout(() => {
         soundEffects.fallingIntoBlackHole.play();
         robot.style.transition = 'transform 1.5s ease';
-        robot.style.transform = 'scale(0) rotate(540deg)';
+        robot.style.transform = 'scale(0) rotate(540deg) translate(0, 0)';
     }, 650);
     setTimeout(() => {
         levelResult();
@@ -557,7 +593,7 @@ function resetPlayerPosition(){
     player.column = 0;
     player.direction = 'down';
     player.angle = 0;
-    robot.style.transform = 'scale(1) rotate(0deg)';
+    robot.style.transform = 'scale(1) rotate(0deg) translate(0, 0)';
 }
 
 function resetCommands(){
