@@ -1,2 +1,1 @@
-# ufjf-dcc202-2025-3-a-trb-na-nossa-maquina-funciona
-ufjf-dcc202-2025-3-a-trb-na-nossa-maquina-funciona created by GitHub Classroom
+Here is the entire development process of the game LoopBot, inspired by the game LightBot, built using HTML, CSS, and JavaScript.
