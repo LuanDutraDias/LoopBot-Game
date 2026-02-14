@@ -80,6 +80,23 @@ const maps = [
     ],
 ];
 
+function changeLevel6Design(){
+    const letterL = document.querySelector('header h1 span:nth-of-type(2) span');
+    const letterI = document.querySelector('.display span');
+    if (level === 6){
+        const blackHole = document.querySelectorAll('.ground-empty');
+        blackHole.forEach(blackHole => {
+            blackHole.style.background = 'linear-gradient(to top, green, mediumseagreen)';
+        })
+        letterL.style.color = 'rgb(0, 255, 0)';
+        letterI.style.color = 'rgb(0, 255, 0)';
+    }
+    else {
+        letterL.style.color = '';
+        letterI.style.color = '';
+    }
+}
+
 function createBoard(){
     const currentMap = maps[level - 1];
     gameBoard.innerHTML = "";
@@ -104,28 +121,28 @@ function addMapElement(square, char){
             square.classList.add('ground-low');
             square.style.background = 'linear-gradient(to top, green, mediumseagreen)';
             break;
-        case 'b':
-            square.classList.add('ground-medium');
+            case 'b':
+                square.classList.add('ground-medium');
             square.style.background = 'linear-gradient(to top, mediumseagreen, mediumspringgreen)';
             break;
         case 'c':
             square.classList.add('ground-high');
             square.style.background = 'linear-gradient(to top, limegreen, lime)';
             break;  
-        case 'd':
-            square.classList.add('ground-light');
+            case 'd':
+                square.classList.add('ground-light');
             square.style.backgroundColor = 'white';
             break;      
         case 'e':
             square.classList.add('ground-empty');
             break;      
+        }
     }
-}
 
-function renderPlayer(){ 
-    if (level === 5 && gameRunning === false){
-        player.column = 1;
-    }
+    function renderPlayer(){ 
+        if (level === 5 && gameRunning === false){
+            player.column = 1;
+        }
     else if (gameRunning === false){
         player.column = 0;
     }
@@ -133,358 +150,6 @@ function renderPlayer(){
     square.appendChild(robot);
     robot.style.transition = 'none';
     robot.style.transform = `scale(1) rotate(${player.angle}deg) translate(0, 0)`;
-}
-
-function movePlayer() { 
-    if (isTheNextSquareOnTheMap() === false){
-        return;
-    }    
-    if (player.direction === 'up'){
-        player.row--;
-    }    
-    if (player.direction === 'down'){
-        player.row++; 
-    } 
-    if (player.direction === 'left'){
-        player.column--;  
-    } 
-    if (player.direction === 'right'){
-        player.column++; 
-    } 
-    renderPlayer();
-}
-
-function turnLeft() {
-    if (player.direction === 'up'){
-        player.direction = 'left';
-        player.angle -= 90;
-    }    
-    else if (player.direction === 'left'){
-        player.direction = 'down';
-        player.angle -= 90;
-    }
-    else if (player.direction === 'down'){
-        player.direction = 'right';
-        player.angle -= 90;
-    }
-    else if (player.direction === 'right'){
-        player.direction = 'up';
-        player.angle -= 90;
-    } 
-    robot.style.transition = 'transform 1s ease';
-    robot.style.transform = `scale(1) rotate(${player.angle}deg) translate(0, 0)`;
-}
-
-function turnRight() {
-    if (player.direction === 'up'){
-        player.direction = 'right';
-        player.angle += 90;
-    } 
-    else if (player.direction === 'right'){
-        player.direction = 'down';
-        player.angle += 90;
-    } 
-    else if (player.direction === 'down'){
-        player.direction = 'left';
-        player.angle += 90;
-    } 
-    else if (player.direction === 'left'){
-        player.direction = 'up';
-        player.angle += 90;
-    } 
-    robot.style.transition = 'transform 1s ease';
-    robot.style.transform = `scale(1) rotate(${player.angle}deg) translate(0, 0)`;
-}
-
-function prepareForJumpAnimation(){
-    robot.style.transition = 'transform 0.5s ease';
-    robot.style.transform = `scale(1) rotate(${player.angle}deg) translate(0, 4px)`;
-}
-
-function jumpAnimation(){
-    soundEffects.jump.play();
-    robot.style.transition = 'transform 0.3s ease';
-    robot.style.transform = `scale(1) rotate(${player.angle}deg) translate(0, -7px)`;
-}
-
-function fallingAfterJumping(){
-    robot.style.transition = 'transform 0.3s ease';
-    robot.style.transform = `scale(1) rotate(${player.angle}deg) translate(0, 0)`;
-}
-
-let delay;
-function executeCommands(){
-    disableAllButtons();
-    if (gameRunning === true || player.alive === false){
-        return;
-    }
-    gameRunning = true; 
-    delay = 1200;
-    for (let cmd = 0; cmd < commandsToExecuteOnMain.length; cmd++){
-        if (commandsToExecuteOnMain[0] !== 'jump' && cmd === 0){
-            delay = 0;
-        }
-        if (commandsToExecuteOnMain[cmd] === 'p1'){ 
-            for (let subCmd1 = 0; subCmd1 < commandsToExecuteOnP1.length; subCmd1++){ 
-                if (commandsToExecuteOnP1[subCmd1] === 'jump'){
-                    const jumpAnimationTimeoutId = setTimeout(() => jumpAnimation(), delay - 600);
-                    const prepareForJumpAnimationTimeoutId = setTimeout(() => prepareForJumpAnimation(), delay - 1200);
-                    jumpAnimationTimeouts.push(jumpAnimationTimeoutId);
-                    jumpAnimationTimeouts.push(prepareForJumpAnimationTimeoutId);
-                }
-                const soundEffectTimeoutId = setTimeout(() => runSoundEffect(commandsToExecuteOnP1[subCmd1]), delay);
-                const commandTimeoutId = setTimeout(() => runCommand(commandsToExecuteOnP1[subCmd1]), delay); 
-                soundEffectsTimeouts.push(soundEffectTimeoutId);
-                commandTimeouts.push(commandTimeoutId);
-                if (commandsToExecuteOnP1[subCmd1 + 1] === 'jump'){
-                    delay += 1800;
-                }
-                else if (commandsToExecuteOnP1[subCmd1] === 'right' || commandsToExecuteOnP1[subCmd1] === 'left') {
-                    delay += 1200;
-                }
-                else {
-                    delay += 600;
-                }
-            } 
-        } 
-        else if (commandsToExecuteOnMain[cmd] === 'p2'){ 
-            for (let subCmd2 = 0; subCmd2 < commandsToExecuteOnP2.length; subCmd2++){ 
-                if (commandsToExecuteOnP2[subCmd2] === 'jump'){
-                    const jumpAnimationTimeoutId = setTimeout(() => jumpAnimation(), delay - 600);
-                    const prepareForJumpAnimationTimeoutId = setTimeout(() => prepareForJumpAnimation(), delay - 1200);
-                    jumpAnimationTimeouts.push(jumpAnimationTimeoutId);
-                    jumpAnimationTimeouts.push(prepareForJumpAnimationTimeoutId);
-                }    
-                const soundEffectTimeoutId = setTimeout(() => runSoundEffect(commandsToExecuteOnP2[subCmd2]), delay);
-                const commandTimeoutId = setTimeout(() => runCommand(commandsToExecuteOnP2[subCmd2]), delay);
-                soundEffectsTimeouts.push(soundEffectTimeoutId);
-                commandTimeouts.push(commandTimeoutId);  
-                if (commandsToExecuteOnP2[subCmd2 + 1] === 'jump'){
-                    delay += 1800;
-                }
-                else if (commandsToExecuteOnP2[subCmd2] === 'right' || commandsToExecuteOnP2[subCmd2] === 'left') {
-                    delay += 1200;
-                }
-                else {
-                    delay += 600;
-                }
-            } 
-        } 
-        else { 
-            if (commandsToExecuteOnMain[cmd] === 'jump'){
-                const jumpAnimationTimeoutId = setTimeout(() => jumpAnimation(), delay - 600);
-                const prepareForJumpAnimationTimeoutId = setTimeout(() => prepareForJumpAnimation(), delay - 1200);
-                jumpAnimationTimeouts.push(jumpAnimationTimeoutId);
-                jumpAnimationTimeouts.push(prepareForJumpAnimationTimeoutId);
-            }    
-            const soundEffectTimeoutId = setTimeout(() => runSoundEffect(commandsToExecuteOnMain[cmd]), delay);
-            const commandTimeoutId = setTimeout(() => runCommand(commandsToExecuteOnMain[cmd]), delay);
-            soundEffectsTimeouts.push(soundEffectTimeoutId);
-            commandTimeouts.push(commandTimeoutId); 
-            if (commandsToExecuteOnMain[cmd + 1] === 'jump'){
-                delay += 1800;
-            }
-            else if (commandsToExecuteOnMain[cmd] === 'right' || commandsToExecuteOnMain[cmd] === 'left') {
-                delay += 1200;
-            }
-            else {
-                delay += 600;
-            }
-        } 
-    }
-    levelResultWithNoDeath();
-}
-
-let levelResultWithNoDeathIdTimeout;
-function levelResultWithNoDeath(){
-    levelResultWithNoDeathIdTimeout = setTimeout(() => {
-        gameRunning = false;
-        levelResult();
-    }, delay + 650);
-}
-
-function clearAllTimeouts(){
-    soundEffectsTimeouts.forEach(soundEffectsTimeouts => clearTimeout(soundEffectsTimeouts));
-    soundEffectsTimeouts = [];
-    commandTimeouts.forEach(commandTimeoutId => clearTimeout(commandTimeoutId));
-    commandTimeouts = [];
-    jumpAnimationTimeouts.forEach(jumpAnimationTimeouts => clearTimeout(jumpAnimationTimeouts));
-    jumpAnimationTimeouts = [];
-    clearTimeout(levelResultWithNoDeathIdTimeout);
-}
-
-function resetAllTimeoutsArrays(){
-    soundEffectsTimeouts = [];
-    commandTimeouts = [];
-    jumpAnimationTimeouts = [];
-}
-
-function handleDeath(){
-    player.alive = false;
-    gameRunning = false;
-    clearAllTimeouts()
-    setTimeout(() => {
-        soundEffects.fallingIntoBlackHole.play();
-        robot.style.transition = 'transform 1.5s ease';
-        robot.style.transform = 'scale(0) rotate(540deg) translate(0, 0)';
-    }, 650);
-    setTimeout(() => {
-        levelResult();
-    }, 1950);
-}
-
-function runSoundEffect(cmd){
-    if (cmd === 'forward'){
-        soundEffects.forward.play();
-    }
-    else if (cmd === 'light'){
-        soundEffects.lightSwitch.play();
-    }
-    else if (cmd === 'right'){
-        soundEffects.turnRight.play();
-    }
-    else if (cmd === 'left'){
-        soundEffects.turnLeft.play();
-    }
-}
-
-function runCommand(cmd){ 
-    if (cmd === 'forward' && isTheNextSquareOnTheMap() === true && isTheNextSquareLowerOrEqualPlayerHigh() === true){ 
-        movePlayer(); 
-        if (isTheSquareSafe() === false){
-            handleDeath(); 
-        } 
-    } 
-    else if (cmd === 'jump' && isTheNextSquareOnTheMap() && isTheNextSquareLowerOrEqualPlayerHigh() === false){ 
-        movePlayer(); 
-        if (isTheSquareSafe() === false){
-            handleDeath(); 
-        }    
-    }
-    else if (cmd === 'left'){
-        turnLeft(); 
-    }
-    else if (cmd === 'right'){
-        turnRight(); 
-    } 
-    else if (cmd === 'light'){ 
-        const currentSquare = document.getElementById(`square-${player.row}-${player.column}`); 
-        if (currentSquare.style.backgroundColor === 'yellow' && currentSquare.classList.contains('ground-low')){ 
-            currentSquare.style.background = 'linear-gradient(to top, green, mediumseagreen)'; 
-        }
-        else if (currentSquare.style.backgroundColor === 'yellow' && currentSquare.classList.contains('ground-medium')){ 
-            currentSquare.style.background = 'linear-gradient(to top, mediumseagreen, mediumspringgreen)'; 
-        }
-        else if (currentSquare.style.backgroundColor === 'yellow' && currentSquare.classList.contains('ground-high')){ 
-            currentSquare.style.background = 'linear-gradient(to top, limegreen, lime)'; 
-        }
-        else if (currentSquare.style.backgroundColor === 'yellow' && currentSquare.classList.contains('ground-light')){ 
-            currentSquare.style.backgroundColor = 'white'; 
-        }   
-        else { 
-            currentSquare.style.background = '';
-            currentSquare.style.backgroundColor = 'yellow'; 
-        } 
-    }
-    else {
-        fallingAfterJumping();
-    }
-}
-
-function isTheSquareSafe(){
-    const currentSquare = document.getElementById(`square-${player.row}-${player.column}`);
-    if (currentSquare.classList.contains('ground-empty')){
-        return false;
-    }
-    else {
-        return true;
-    }
-}
-
-function updateCurrentPlayerHigh(){
-    const currentSquare = document.getElementById(`square-${player.row}-${player.column}`);
-    if (currentSquare.classList.contains('ground-low') || currentSquare.classList.contains('ground-light')){
-        player.high = 0;
-    }
-    else if (currentSquare.classList.contains('ground-medium')){
-        player.high = 1;
-    }
-    else if (currentSquare.classList.contains('ground-high')){
-        player.high = 2;
-    }
-}
-
-function nextSquareHigh(){
-    if (getNextSquare().classList.contains('ground-light') || getNextSquare().classList.contains('ground-low') || getNextSquare().classList.contains('ground-empty')){
-        return 0;
-    }
-    else if (getNextSquare().classList.contains('ground-medium')){
-        return 1;
-    }
-    else if (getNextSquare().classList.contains('ground-high')){
-         return 2;
-    } 
-}
-
-function getNextSquare(){
-    if (player.direction === 'up') {
-        return document.getElementById(`square-${player.row - 1}-${player.column}`);
-    }
-    else if (player.direction === 'down') {
-        return document.getElementById(`square-${player.row + 1}-${player.column}`);
-    }
-    else if (player.direction === 'left') {
-        return document.getElementById(`square-${player.row}-${player.column - 1}`);
-    }
-    else if (player.direction === 'right') {
-        return document.getElementById(`square-${player.row}-${player.column + 1}`);
-    }
-}
-
-
-function isTheNextSquareLowerOrEqualPlayerHigh(){
-    updateCurrentPlayerHigh();
-    if (player.high >= nextSquareHigh()){
-        return true;
-    }
-    else {
-        return false;
-    }
-}
-
-function isTheNextSquareOnTheMap(){
-    if (player.direction === 'up'){
-        if (player.row - 1 < 0){
-            return false;
-        }
-        else {
-            return true;
-        }
-    }     
-    else if (player.direction === 'down'){
-        if (player.row + 1 > 4){
-            return false;
-        }
-        else {
-            return true;
-        }
-    } 
-    else if (player.direction === 'left'){
-        if (player.column - 1 < 0){
-            return false;
-        }
-        else {
-            return true;
-        } 
-    } 
-    else if (player.direction === 'right'){
-        if (player.column + 1 > 4){
-            return false;
-        }
-        else {
-            return true;
-        } 
-    } 
 }
 
 let commandsToExecuteOnMain = [];
@@ -499,29 +164,6 @@ let counterP2 = 0;
 const displayMain = document.querySelector('#displayMain');
 const displayP1 = document.querySelector('#displayP1');
 const displayP2 = document.querySelector('#displayP2');
-
-function transformCommands(command){
-    switch (command){
-        case 'forward':
-            return '<i class="bi bi-arrow-up"></i>';
-        case 'right':
-            return '<i class="bi bi-arrow-clockwise"></i>';
-        case 'left':
-            return '<i class="bi bi-arrow-counterclockwise"></i>';       
-        case 'light':
-            return '<i class="bi bi-lightbulb"></i>';
-        case 'jump':
-            return '<i class="bi bi-capslock-fill"></i>';    
-        case 'p1':
-            return '<span>P1</span>'; 
-        case 'p2':
-            return '<span>P2</span>';
-        case 'main':
-            return '<span>MAIN</span>';
-        default:
-            return '';        
-    }
-}
 
 let p1Exists = false;
 let p2Exists = false;
@@ -546,6 +188,29 @@ function getCommand(command){
     }
     else {
         addMainCommands(command);
+    }
+}
+
+function transformCommands(command){
+    switch (command){
+        case 'forward':
+            return '<i class="bi bi-arrow-up"></i>';
+        case 'right':
+            return '<i class="bi bi-arrow-clockwise"></i>';
+        case 'left':
+            return '<i class="bi bi-arrow-counterclockwise"></i>';       
+        case 'light':
+            return '<i class="bi bi-lightbulb"></i>';
+        case 'jump':
+            return '<i class="bi bi-capslock-fill"></i>';    
+        case 'p1':
+            return '<span>P1</span>'; 
+        case 'p2':
+            return '<span>P2</span>';
+        case 'main':
+            return '<span>MAIN</span>';
+        default:
+            return '';        
     }
 }
 
@@ -626,6 +291,355 @@ function addP2Commands(command){
         commandsToExecuteOnP2.push(command);
         displayP2.innerHTML = commandsToAppearOnP2.join('');
         counterP2++; 
+    }
+}
+
+function movePlayer() { 
+    if (isTheNextSquareOnTheMap() === false){
+        return;
+    }    
+    if (player.direction === 'up'){
+        player.row--;
+    }    
+    if (player.direction === 'down'){
+        player.row++; 
+    } 
+    if (player.direction === 'left'){
+        player.column--;  
+    } 
+    if (player.direction === 'right'){
+        player.column++; 
+    } 
+    renderPlayer();
+}
+
+function turnLeft() {
+    if (player.direction === 'up'){
+        player.direction = 'left';
+        player.angle -= 90;
+    }    
+    else if (player.direction === 'left'){
+        player.direction = 'down';
+        player.angle -= 90;
+    }
+    else if (player.direction === 'down'){
+        player.direction = 'right';
+        player.angle -= 90;
+    }
+    else if (player.direction === 'right'){
+        player.direction = 'up';
+        player.angle -= 90;
+    } 
+    robot.style.transition = 'transform 1s ease';
+    robot.style.transform = `scale(1) rotate(${player.angle}deg) translate(0, 0)`;
+}
+
+function turnRight() {
+    if (player.direction === 'up'){
+        player.direction = 'right';
+        player.angle += 90;
+    } 
+    else if (player.direction === 'right'){
+        player.direction = 'down';
+        player.angle += 90;
+    } 
+    else if (player.direction === 'down'){
+        player.direction = 'left';
+        player.angle += 90;
+    } 
+    else if (player.direction === 'left'){
+        player.direction = 'up';
+        player.angle += 90;
+    } 
+    robot.style.transition = 'transform 1s ease';
+    robot.style.transform = `scale(1) rotate(${player.angle}deg) translate(0, 0)`;
+}
+
+function prepareForJumpAnimation(){
+    robot.style.transition = 'transform 0.5s ease';
+    robot.style.transform = `scale(1) rotate(${player.angle}deg) translate(0, 4px)`;
+}
+
+function jumpAnimation(){
+    soundEffects.jump.play();
+    robot.style.transition = 'transform 0.3s ease';
+    robot.style.transform = `scale(1) rotate(${player.angle}deg) translate(0, -7px)`;
+}
+
+function fallingAfterJumping(){
+    robot.style.transition = 'transform 0.3s ease';
+    robot.style.transform = `scale(1) rotate(${player.angle}deg) translate(0, 0)`;
+}
+
+function handleDeath(){
+    player.alive = false;
+    gameRunning = false;
+    clearAllTimeouts();
+    setTimeout(() => {
+        soundEffects.fallingIntoBlackHole.play();
+        robot.style.transition = 'transform 1.5s ease';
+        robot.style.transform = 'scale(0) rotate(540deg) translate(0, 0)';
+    }, 650);
+    setTimeout(() => levelResult(), 1950);
+}
+
+function runSoundEffect(cmd){
+    if (cmd === 'forward'){
+        soundEffects.forward.play();
+    }
+    else if (cmd === 'light'){
+        soundEffects.lightSwitch.play();
+    }
+    else if (cmd === 'right'){
+        soundEffects.turnRight.play();
+    }
+    else if (cmd === 'left'){
+        soundEffects.turnLeft.play();
+    }
+}
+
+function runCommand(cmd){ 
+    if (cmd === 'forward' && isTheNextSquareOnTheMap() === true && isTheNextSquareLowerOrEqualPlayerHigh() === true){ 
+        movePlayer(); 
+        if (isTheSquareSafe() === false){
+            handleDeath(); 
+        } 
+    } 
+    else if (cmd === 'jump' && isTheNextSquareOnTheMap() && isTheNextSquareLowerOrEqualPlayerHigh() === false){ 
+        movePlayer(); 
+        if (isTheSquareSafe() === false){
+            handleDeath(); 
+        }    
+    }
+    else if (cmd === 'left'){
+        turnLeft(); 
+    }
+    else if (cmd === 'right'){
+        turnRight(); 
+    } 
+    else if (cmd === 'light'){ 
+        const currentSquare = document.getElementById(`square-${player.row}-${player.column}`); 
+        if (currentSquare.style.backgroundColor === 'yellow' && currentSquare.classList.contains('ground-low')){ 
+            currentSquare.style.background = 'linear-gradient(to top, green, mediumseagreen)'; 
+        }
+        else if (currentSquare.style.backgroundColor === 'yellow' && currentSquare.classList.contains('ground-medium')){ 
+            currentSquare.style.background = 'linear-gradient(to top, mediumseagreen, mediumspringgreen)'; 
+        }
+        else if (currentSquare.style.backgroundColor === 'yellow' && currentSquare.classList.contains('ground-high')){ 
+            currentSquare.style.background = 'linear-gradient(to top, limegreen, lime)'; 
+        }
+        else if (currentSquare.style.backgroundColor === 'yellow' && currentSquare.classList.contains('ground-light')){ 
+            currentSquare.style.backgroundColor = 'white'; 
+        }   
+        else { 
+            currentSquare.style.background = '';
+            currentSquare.style.backgroundColor = 'yellow'; 
+        } 
+    }
+    else {
+        fallingAfterJumping();
+    }
+}
+
+let delay;
+function executeCommands(){
+    disableAllButtons();
+    if (gameRunning === true || player.alive === false){
+        return;
+    }
+    gameRunning = true; 
+    delay = 1200;
+    for (let cmd = 0; cmd < commandsToExecuteOnMain.length; cmd++){
+        if (commandsToExecuteOnMain[0] !== 'jump' && cmd === 0){
+            delay = 0;
+        }
+        if (commandsToExecuteOnMain[cmd] === 'p1'){ 
+            for (let subCmd1 = 0; subCmd1 < commandsToExecuteOnP1.length; subCmd1++){ 
+                if (commandsToExecuteOnP1[subCmd1] === 'jump'){
+                    const jumpAnimationTimeoutId = setTimeout(() => jumpAnimation(), delay - 600);
+                    const prepareForJumpAnimationTimeoutId = setTimeout(() => prepareForJumpAnimation(), delay - 1200);
+                    jumpAnimationTimeouts.push(jumpAnimationTimeoutId);
+                    jumpAnimationTimeouts.push(prepareForJumpAnimationTimeoutId);
+                }
+                const soundEffectTimeoutId = setTimeout(() => runSoundEffect(commandsToExecuteOnP1[subCmd1]), delay);
+                const commandTimeoutId = setTimeout(() => runCommand(commandsToExecuteOnP1[subCmd1]), delay); 
+                soundEffectsTimeouts.push(soundEffectTimeoutId);
+                commandTimeouts.push(commandTimeoutId);
+                if (commandsToExecuteOnP1[subCmd1 + 1] === 'jump'){
+                    delay += 1800;
+                }
+                else if (commandsToExecuteOnP1[subCmd1] === 'right' || commandsToExecuteOnP1[subCmd1] === 'left') {
+                    delay += 1200;
+                }
+                else {
+                    delay += 600;
+                }
+            } 
+        } 
+        else if (commandsToExecuteOnMain[cmd] === 'p2'){ 
+            for (let subCmd2 = 0; subCmd2 < commandsToExecuteOnP2.length; subCmd2++){ 
+                if (commandsToExecuteOnP2[subCmd2] === 'jump'){
+                    const jumpAnimationTimeoutId = setTimeout(() => jumpAnimation(), delay - 600);
+                    const prepareForJumpAnimationTimeoutId = setTimeout(() => prepareForJumpAnimation(), delay - 1200);
+                    jumpAnimationTimeouts.push(jumpAnimationTimeoutId);
+                    jumpAnimationTimeouts.push(prepareForJumpAnimationTimeoutId);
+                }    
+                const soundEffectTimeoutId = setTimeout(() => runSoundEffect(commandsToExecuteOnP2[subCmd2]), delay);
+                const commandTimeoutId = setTimeout(() => runCommand(commandsToExecuteOnP2[subCmd2]), delay);
+                soundEffectsTimeouts.push(soundEffectTimeoutId);
+                commandTimeouts.push(commandTimeoutId);  
+                if (commandsToExecuteOnP2[subCmd2 + 1] === 'jump'){
+                    delay += 1800;
+                }
+                else if (commandsToExecuteOnP2[subCmd2] === 'right' || commandsToExecuteOnP2[subCmd2] === 'left') {
+                    delay += 1500;
+                }
+                else {
+                    delay += 600;
+                }
+            } 
+        } 
+        else { 
+            if (commandsToExecuteOnMain[cmd] === 'jump'){
+                const jumpAnimationTimeoutId = setTimeout(() => jumpAnimation(), delay - 600);
+                const prepareForJumpAnimationTimeoutId = setTimeout(() => prepareForJumpAnimation(), delay - 1200);
+                jumpAnimationTimeouts.push(jumpAnimationTimeoutId);
+                jumpAnimationTimeouts.push(prepareForJumpAnimationTimeoutId);
+            }    
+            const soundEffectTimeoutId = setTimeout(() => runSoundEffect(commandsToExecuteOnMain[cmd]), delay);
+            const commandTimeoutId = setTimeout(() => runCommand(commandsToExecuteOnMain[cmd]), delay);
+            soundEffectsTimeouts.push(soundEffectTimeoutId);
+            commandTimeouts.push(commandTimeoutId); 
+            if (commandsToExecuteOnMain[cmd + 1] === 'jump'){
+                delay += 1800;
+            }
+            else if (commandsToExecuteOnMain[cmd] === 'right' || commandsToExecuteOnMain[cmd] === 'left') {
+                delay += 1200;
+            }
+            else {
+                delay += 600;
+            }
+        } 
+    }
+    levelResultWithNoDeath();
+}
+
+let levelResultWithNoDeathIdTimeout;
+function levelResultWithNoDeath(){
+    levelResultWithNoDeathIdTimeout = setTimeout(() => {
+        gameRunning = false;
+        levelResult();
+    }, delay + 650);
+}
+
+function clearAllTimeouts(){
+    soundEffectsTimeouts.forEach(soundEffectsTimeouts => clearTimeout(soundEffectsTimeouts));
+    soundEffectsTimeouts = [];
+    commandTimeouts.forEach(commandTimeoutId => clearTimeout(commandTimeoutId));
+    commandTimeouts = [];
+    jumpAnimationTimeouts.forEach(jumpAnimationTimeouts => clearTimeout(jumpAnimationTimeouts));
+    jumpAnimationTimeouts = [];
+    clearTimeout(levelResultWithNoDeathIdTimeout);
+}
+
+function resetAllTimeoutsArrays(){
+    soundEffectsTimeouts = [];
+    commandTimeouts = [];
+    jumpAnimationTimeouts = [];
+}
+
+function getNextSquare(){
+    if (player.direction === 'up') {
+        return document.getElementById(`square-${player.row - 1}-${player.column}`);
+    }
+    else if (player.direction === 'down') {
+        return document.getElementById(`square-${player.row + 1}-${player.column}`);
+    }
+    else if (player.direction === 'left') {
+        return document.getElementById(`square-${player.row}-${player.column - 1}`);
+    }
+    else if (player.direction === 'right') {
+        return document.getElementById(`square-${player.row}-${player.column + 1}`);
+    }
+}
+
+function nextSquareHigh(){
+    if (getNextSquare().classList.contains('ground-light') || getNextSquare().classList.contains('ground-low') || getNextSquare().classList.contains('ground-empty')){
+        return 0;
+    }
+    else if (getNextSquare().classList.contains('ground-medium')){
+        return 1;
+    }
+    else if (getNextSquare().classList.contains('ground-high')){
+        return 2;
+    } 
+}
+
+function isTheNextSquareLowerOrEqualPlayerHigh(){
+    updateCurrentPlayerHigh();
+    if (player.high >= nextSquareHigh()){
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+function updateCurrentPlayerHigh(){
+    const currentSquare = document.getElementById(`square-${player.row}-${player.column}`);
+    if (currentSquare.classList.contains('ground-low') || currentSquare.classList.contains('ground-light')){
+        player.high = 0;
+    }
+    else if (currentSquare.classList.contains('ground-medium')){
+        player.high = 1;
+    }
+    else if (currentSquare.classList.contains('ground-high')){
+        player.high = 2;
+    }
+}
+
+function isTheNextSquareOnTheMap(){
+    if (player.direction === 'up'){
+        if (player.row - 1 < 0){
+            return false;
+        }
+        else {
+            return true;
+        }
+    }     
+    else if (player.direction === 'down'){
+        if (player.row + 1 > 4){
+            return false;
+        }
+        else {
+            return true;
+        }
+    } 
+    else if (player.direction === 'left'){
+        if (player.column - 1 < 0){
+            return false;
+        }
+        else {
+            return true;
+        } 
+    } 
+    else if (player.direction === 'right'){
+        if (player.column + 1 > 4){
+            return false;
+        }
+        else {
+            return true;
+        } 
+    } 
+}
+
+function isTheSquareSafe(){
+    const currentSquare = document.getElementById(`square-${player.row}-${player.column}`);
+    if (currentSquare.classList.contains('ground-empty')){
+        return false;
+    }
+    else {
+        return true;
     }
 }
 
@@ -712,6 +726,16 @@ function allTilesHaveBeenLit(){
     return allLightsOn;
 }
 
+function allLevelsAreCompleted(){
+    let gameClear = true;
+    completedLevels.forEach(level => {
+        if (level === false){
+            gameClear = false;
+        }
+    });
+    return gameClear;
+}
+
 function levelResult(){
     hideResultOverlay();
     selectLevelAfterResultButton.classList.remove('hidden');
@@ -774,16 +798,6 @@ function enableAllButtons(){
     });
 }
 
-function allLevelsAreCompleted(){
-    let gameClear = true;
-    completedLevels.forEach(level => {
-        if (level === false){
-            gameClear = false;
-        }
-    });
-    return gameClear;
-}
-
 const selectLevelsTotalArea = document.createElement('div');
 selectLevelsTotalArea.setAttribute('id', 'selectLevelsTotalArea');
 body.appendChild(selectLevelsTotalArea);
@@ -829,7 +843,7 @@ function translateTheGame(){
         gameInstructionsTitle.innerHTML = 'Instruções do Jogo';
     }
     else if (translateTheGameButton.innerHTML === 'English 🇺🇸'){
-        translateTheGameButton.innerHTML = 'Português 🇧🇷'
+        translateTheGameButton.innerHTML = 'Português 🇧🇷';
         mainTitle.innerHTML = '<span>Welcome to the GAME:</span><span><span>L</span>ightBot</span>';
         mainButton.innerHTML = '<span>MAIN</span>';
         mainDisplayTitle.innerHTML = 'MA<span>I</span>N';
@@ -857,6 +871,7 @@ function createSelectLevelsSection(){
         selectLevelButton[level - 1].classList.add('squareLevel');
         if (level !== 1){
             selectLevelButton[level - 1].classList.add('notAvailable');
+            selectLevelButton[level - 1].setAttribute('disabled', '');
             selectLevelButton[level - 1].innerHTML += '<i class="bi bi-lock"></i>';
         }
     });
@@ -879,48 +894,6 @@ function showSelectLevelsTotalArea(){
     }
 }
 
-selectLevelButton[0].addEventListener('click', function(){
-    level = 1;
-    if (gameMusicPlayedForTheFirstTime === false){
-        soundEffects.gameMusic.play();
-        gameMusicIsPlaying = true;
-        gameMusicPlayedForTheFirstTime = true;
-    }
-    createBoard();
-    hideSelectLevelsTotalArea();
-    showAndHideTheButtonsThatAreAvailableOnTheCurrentLevel();
-});
-selectLevelButton[1].addEventListener('click', function(){
-    level = 2;
-    createBoard();
-    hideSelectLevelsTotalArea();
-    showAndHideTheButtonsThatAreAvailableOnTheCurrentLevel();
-});
-selectLevelButton[2].addEventListener('click', function(){
-    level = 3;
-    createBoard();
-    hideSelectLevelsTotalArea();
-    showAndHideTheButtonsThatAreAvailableOnTheCurrentLevel();
-});
-selectLevelButton[3].addEventListener('click', function(){
-    level = 4;
-    createBoard();
-    hideSelectLevelsTotalArea();
-    showAndHideTheButtonsThatAreAvailableOnTheCurrentLevel();
-});
-selectLevelButton[4].addEventListener('click', function(){
-    level = 5;
-    createBoard();
-    hideSelectLevelsTotalArea();
-    showAndHideTheButtonsThatAreAvailableOnTheCurrentLevel();
-});
-selectLevelButton[5].addEventListener('click', function(){
-    level = 6;
-    createBoard();
-    hideSelectLevelsTotalArea();
-    showAndHideTheButtonsThatAreAvailableOnTheCurrentLevel();
-});
-
 function showAndHideTheButtonsThatAreAvailableOnTheCurrentLevel(){
     turnRightButton.classList.remove('hidden');
     turnLeftButton.classList.remove('hidden');
@@ -935,22 +908,15 @@ function showAndHideTheButtonsThatAreAvailableOnTheCurrentLevel(){
     }
 }
 
-function changeLevel6Design(){
-    const letterL = document.querySelector('header h1 span:nth-of-type(2) span');
-    const letterI = document.querySelector('.display span');
-    if (level === 6){
-        const blackHole = document.querySelectorAll('.ground-empty');
-        blackHole.forEach(blackHole => {
-            blackHole.style.background = 'linear-gradient(to top, green, mediumseagreen)';
-        })
-        letterL.style.color = 'rgb(0, 255, 0)';
-        letterI.style.color = 'rgb(0, 255, 0)';
-    }
-    else {
-        letterL.style.color = '';
-        letterI.style.color = '';
-    }
-}
+selectLevelButton.forEach((selectLevelButton, index) => {
+    selectLevelButton.addEventListener('click', () => {
+        level = index + 1;
+        playGameMusicForTheFirstTime();
+        createBoard();
+        hideSelectLevelsTotalArea();
+        showAndHideTheButtonsThatAreAvailableOnTheCurrentLevel();
+    });
+})
 
 const gameInstructionsTotalArea = document.createElement('div');
 gameInstructionsTotalArea.setAttribute('id', 'gameInstructionsTotalArea');
@@ -972,12 +938,6 @@ gameInstructionsSection.appendChild(secondGameInstruction);
 const thirdGameInstruction = document.createElement('p');
 gameInstructionsSection.appendChild(thirdGameInstruction);
 
-returnFromGameInstructionsAreaButton.innerHTML = '<i class="bi bi-arrow-90deg-left"></i>'
-returnFromGameInstructionsAreaButton.addEventListener('click', () => {
-    selectLevel();
-    hideGameInstructionsTotalArea();
-});
-
 function showGameInstructionsTotalArea(){
     selectLevelsTotalArea.classList.add('hidden');
     gameInstructionsTotalArea.classList.remove('hidden');
@@ -987,6 +947,12 @@ function hideGameInstructionsTotalArea(){
     gameInstructionsTotalArea.classList.add('hidden');
 }
 hideGameInstructionsTotalArea();
+
+returnFromGameInstructionsAreaButton.innerHTML = '<i class="bi bi-arrow-90deg-left"></i>';
+returnFromGameInstructionsAreaButton.addEventListener('click', () => {
+    selectLevel();
+    hideGameInstructionsTotalArea();
+});
 
 const groundLightSquareWhite = document.createElement('div');
 groundLightSquareWhite.classList.add('instructionsSquare');
@@ -1021,7 +987,8 @@ thirdGameInstruction.appendChild(groundHigh.cloneNode(true));
 const soundEffects = {
     gameClear: new Howl({
         src: ['./audio/gameClear.mp3', './audio/gameClear.ogg'],
-        volume: 0.1, 
+        volume: 0.2,
+        autoplay: true,
     }),
     levelClear: new Howl({
         src: ['./audio/levelClear.mp3', './audio/levelClear.ogg'],
@@ -1029,7 +996,7 @@ const soundEffects = {
     }),
     gameOver: new Howl({
         src: ['./audio/gameOver.mp3', './audio/gameOver.ogg'],
-        volume: 0.5,
+        volume: 0.5
     }),
     fallingIntoBlackHole:  new Howl({
         src: ['./audio/fallingIntoBlackHole.mp3', './audio/fallingIntoBlackHole.ogg'],
@@ -1049,7 +1016,7 @@ const soundEffects = {
     }),
     jump: new Howl({
         src: ['./audio/jump.mp3', './audio/jump.ogg'],
-        volume: 0.4
+        volume: 0.45
     }),
     lightSwitch: new Howl({
         src: ['./audio/lightSwitch.mp3', './audio/jump.ogg'],
@@ -1064,6 +1031,14 @@ const soundEffects = {
 };
 let gameMusicIsPlaying = false;
 let gameMusicPlayedForTheFirstTime = false;
+
+function playGameMusicForTheFirstTime(){
+    if (gameMusicPlayedForTheFirstTime === false){
+        soundEffects.gameMusic.play();
+        gameMusicIsPlaying = true;
+        gameMusicPlayedForTheFirstTime = true;
+    }
+}
 
 const musicOnOffButton = document.querySelector('#playMusicButton');
 function playMusic(){

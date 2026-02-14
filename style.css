@@ -72,14 +72,6 @@ header.mainHeader h1 > span:first-of-type {
     box-shadow: 3px 3px 5px rgba(0, 0, 0);
 }
 
-#selectLevelsTotalArea header h1 span:first-of-type {
-    color: rgb(255, 255, 255);
-    background-color: rgb(22, 158, 255);
-    border-radius: 10px;
-    padding: 5px;
-    box-shadow: 3px 3px 5px rgba(0, 0, 0);
-}
-
 main {
     grid-row: 2 / 3;
     grid-column: 1 / 2;
@@ -171,6 +163,7 @@ aside {
 }
 
 .display {
+    color: white;
     grid-column: 1 / 3;
     grid-row: 2 / 3;
     height: 90%;
@@ -189,7 +182,6 @@ aside {
 }
 
 .display p {
-    color: white;
     border: 2px solid white;
     border-radius: 10px;
     padding-left: 10px;
@@ -214,7 +206,6 @@ aside {
     background-color: rgb(200, 200, 200);
     grid-row: 2 / 3;
     grid-column: 1 / 3;
-    color: white;
     font-size: 60px;
     border: 2px solid white;
     border-radius: 10px;
@@ -231,7 +222,6 @@ aside {
     background-color: rgb(200, 200, 200);
     grid-row: 4 / 5;
     grid-column: 1 / 2;
-    color: white;
     font-size: 60px;
     border: 2px solid white;
     border-radius: 10px;
@@ -248,7 +238,6 @@ aside {
     background-color: rgb(200, 200, 200);
     grid-row: 4 / 5;
     grid-column: 2 / 3;
-    color: white;
     font-size: 60px;
     border: 2px solid white;
     border-radius: 10px;
@@ -446,6 +435,14 @@ footer span:nth-of-type(2).hidden{
     justify-items: center;
     margin-top: 5px;
     margin-bottom: 20px;
+}
+
+#selectLevelsTotalArea header h1 span:first-of-type {
+    color: rgb(255, 255, 255);
+    background-color: rgb(22, 158, 255);
+    border-radius: 10px;
+    padding: 5px;
+    box-shadow: 3px 3px 5px rgba(0, 0, 0);
 }
 
 #selectLevelsTotalArea.hidden {
