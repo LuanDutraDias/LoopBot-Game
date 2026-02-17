@@ -821,6 +821,7 @@ selectLevelsHeader.appendChild(translateTheGameButton);
 translateTheGameButton.innerHTML = 'Português 🇧🇷';
 translateTheGameButton.addEventListener('click', translateTheGame);
 
+const musicOnOffButton = document.querySelector('#playMusicButton');
 function translateTheGame(){
     const mainTitle = document.querySelector('.mainHeader h1');
     const mainButton = document.querySelector('#mainBtn');
@@ -841,6 +842,11 @@ function translateTheGame(){
         selectLevelsCommand.innerHTML = 'Selecione a <span>FASE</span>';
         instructionsButton.innerHTML = 'Instruções';
         gameInstructionsTitle.innerHTML = 'Instruções do Jogo';
+        if (gameMusicIsPlaying === false){
+            musicOnOffButton.innerHTML = '<span>Música:</span><span>NÃO</span>';
+        } else {
+            musicOnOffButton.innerHTML = '<span>Música:</span><span>SIM</span>';
+        }    
     }
     else if (translateTheGameButton.innerHTML === 'English 🇺🇸'){
         translateTheGameButton.innerHTML = 'Português 🇧🇷';
@@ -856,7 +862,13 @@ function translateTheGame(){
         selectLevelsCommand.innerHTML = 'Select the <span>LEVEL</span>';
         instructionsButton.innerHTML = 'Instructions';
         gameInstructionsTitle.innerHTML = 'Game Instructions';
-    }
+        if (gameMusicIsPlaying === true){
+            musicOnOffButton.innerHTML = '<span>Music:</span><span>ON</span>';
+        }
+        else {
+            musicOnOffButton.innerHTML = '<span>Music:</span><span>OFF</span>';
+        }
+    }    
 }
 
 const levels = [1, 2, 3, 4, 5, 6];
@@ -1039,7 +1051,6 @@ function playGameMusicForTheFirstTime(){
     }
 }
 
-const musicOnOffButton = document.querySelector('#playMusicButton');
 function playMusic(){
     if (gameMusicIsPlaying === false){
         soundEffects.gameMusic.play();
