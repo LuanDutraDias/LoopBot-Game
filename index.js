@@ -834,7 +834,7 @@ function translateTheGame(){
         mainButton.innerHTML = '<span>Principal</span>';
         mainDisplayTitle.innerHTML = 'PR<span>I</span>NCIPAL';
         selectLevelsAreaButton.innerHTML = 'Fases';
-        allRightsReserved.innerHTML = '&copy; Todos os direitos reservados';
+        allRightsReserved.innerHTML = '&copy; Todos os direitos reservados ';
         tryAgainButton.innerHTML = 'Tentar Novamente';
         nextLevelButton.innerHTML = 'Próxima fase';
         selectLevelAfterResultButton.innerHTML = 'Fases';
@@ -854,7 +854,7 @@ function translateTheGame(){
         mainButton.innerHTML = '<span>MAIN</span>';
         mainDisplayTitle.innerHTML = 'MA<span>I</span>N';
         selectLevelsAreaButton.innerHTML = 'Levels';
-        allRightsReserved.innerHTML = '&copy; All rights reserved';
+        allRightsReserved.innerHTML = '&copy; All rights reserved ';
         tryAgainButton.innerHTML = 'Try Again';
         nextLevelButton.innerHTML = 'Next Level';
         selectLevelAfterResultButton.innerHTML = 'Levels';
