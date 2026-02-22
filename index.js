@@ -678,6 +678,11 @@ function restartLevel(){
     showAndHideTheButtonsThatAreAvailableOnTheCurrentLevel();
 }
 
+function restartLevelWhenTheUserWants(){
+    restartLevel();
+    clearAllTimeouts();
+}
+
 function nextLevel(){
     player.alive = true;
     gameRunning = false;
@@ -789,6 +794,7 @@ function disableAllButtons(){
     buttons.forEach(button => {
         button.setAttribute('disabled', '');
     });
+    buttons[11].removeAttribute('disabled');
 }
 
 function enableAllButtons(){
