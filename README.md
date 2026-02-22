@@ -1,6 +1,6 @@
 I AM SO GLAD WITH THE RESULT. I put a lot of effort, time, and love into this project.
 
-This repository documents the entire development process of the game LoopBot, inspired by LightBot, built using HTML, CSS, and JavaScript. I continued developing it independently on my own initiative after submitting the previous version, which was created by me and my friend Davi Dala, to my instructor, Igor Knop, at the Federal University of Juiz de Fora (1st semester – Web Development course).
+This repository documents the entire development process of the game LoopBot, inspired by LightBot, built using HTML, CSS, and JavaScript. I continued developing it independently on my own initiative after submitting the previous version, which was created by me and my friend Davi Dala, to my instructor, Igor Knop, at the Federal University of Juiz de Fora (1st semester – Web Development course - Computer Science).
 
 # LoopBot
 - LoopBot is a browser-based programming puzzle game inspired by LightBot.
